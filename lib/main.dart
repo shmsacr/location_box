@@ -4,20 +4,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_box/app/product/init/localization/app_localization.dart';
 import 'package:location_box/app/product/init/state/theme/view_model.dart';
 import 'package:location_box/app/product/init/state_initialize.dart';
+import 'package:location_box/app/product/navigation/app_router.dart';
 import 'package:location_box/app/product/theme/dark_theme_data.dart';
 import 'package:location_box/app/product/theme/light_theme_data.dart';
-import 'package:location_box/app/view/home/view/home_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  runApp(AppLocalization(child: StateInitialize(child: MyApp())));
+  runApp(AppLocalization(child: StateInitialize(child: _MyApp())));
 }
 
-class MyApp extends StatelessWidget {
+final class _MyApp extends StatelessWidget {
+  static final AppRouter _appRouter = AppRouter();
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: _appRouter.config(),
       localizationsDelegates: context.localizationDelegates,
       supportedLocales: context.supportedLocales,
       locale: context.locale,
@@ -25,7 +28,6 @@ class MyApp extends StatelessWidget {
       themeMode: context.watch<AppThemeViewModel>().state.themeMode,
       darkTheme: CustomDarkTheme().themeData,
       title: 'Material App',
-      home: HomeView(),
     );
   }
 }
