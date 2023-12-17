@@ -1,0 +1,12 @@
+{
+    "home": {
+        "title": "Home",
+        "description": "Welcome to the home page"
+    },
+    "general": {
+        "button": {
+            "ok": "OK",
+            "cancel": "Cancel"
+        }
+    }
+}
