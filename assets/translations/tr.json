@@ -1,0 +1,12 @@
+{
+    "home": {
+        "title": "Ana Sayfa",
+        "description": "Bu bir açıklama."
+    },
+    "general": {
+        "button": {
+            "ok": "Tamam",
+            "cancel": "Kapat"
+        }
+    }
+}
