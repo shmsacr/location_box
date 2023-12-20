@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:location_box/app/view/maps/mixin/google_maps_view_mixin.dart';
 
 class GoogleMapsView extends StatefulWidget {
   const GoogleMapsView({super.key});
@@ -9,38 +9,8 @@ class GoogleMapsView extends StatefulWidget {
   State<GoogleMapsView> createState() => _GoogleMapsViewState();
 }
 
-class _GoogleMapsViewState extends State<GoogleMapsView> {
-  late GoogleMapController mapController;
-  LatLng? currentLocation;
-
-  @override
-  void initState() {
-    super.initState();
-    _getCurrentLocation();
-  }
-
-  Future<void> _getCurrentLocation() async {
-    try {
-      LocationPermission permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return;
-      }
-
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      if (mounted) {
-        setState(() {
-          currentLocation = LatLng(position.latitude, position.longitude);
-          print('currentLocation: $currentLocation');
-        });
-      }
-    } catch (e) {
-      print('Error getting current location: $e');
-    }
-  }
-
+class _GoogleMapsViewState extends State<GoogleMapsView>
+    with GoogleMapsViewMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,19 +21,10 @@ class _GoogleMapsViewState extends State<GoogleMapsView> {
           onPressed: () => Navigator.pop(context),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.my_location),
-            onPressed: () {
-              mapController.animateCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(
-                    target: currentLocation!,
-                    zoom: 14.4746,
-                  ),
-                ),
-              );
-            },
-          ),
+          IconButton(icon: const Icon(Icons.save), onPressed: () {
+            showModalBottomSheet(context: 
+            , builder: (context) => );
+          } ),
         ],
       ),
       body: GoogleMap(
@@ -83,15 +44,5 @@ class _GoogleMapsViewState extends State<GoogleMapsView> {
         markers: currentLocation != null ? createMarker() : {},
       ),
     );
-  }
-
-  Set<Marker> createMarker() {
-    return {
-      Marker(
-        markerId: MarkerId("current_location"),
-        position: currentLocation!,
-        infoWindow: InfoWindow(title: "Your Current Location"),
-      ),
-    };
   }
 }
