@@ -1,14 +1,14 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
+import 'package:flutter/foundation.dart';
 part 'location.freezed.dart';
 part 'location.g.dart';
 
 @freezed
 class Location with _$Location {
   const factory Location({
-    required String id,
-    required double latitude,
-    required double longitude,
+    int? id,
+    double? latitude,
+    double? longitude,
     String? title,
     String? description,
     String? picture,
@@ -16,6 +16,6 @@ class Location with _$Location {
     String? phoneNumber,
   }) = _Location;
 
-  factory Location.fromJson(Map<String, dynamic> json) =>
+  factory Location.fromJson(Map<String, Object?> json) =>
       _$LocationFromJson(json);
 }
