@@ -1,19 +1,18 @@
-
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_box/app/view/maps/view/google_maps_view.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:location_box/app/view/maps/view_model/google_maps_view_model.dart';
 
-mixin GoogleMapsViewMixin on State<GoogleMapsView>{
-late GoogleMapController mapController;
-final formKey = GlobalKey<FormBuilderState>();
-LatLng? currentLocation;
+mixin GoogleMapsViewMixin on State<GoogleMapsView> {
+  late GoogleMapController mapController;
+  final formKey = GlobalKey<FormBuilderState>();
+  final mapsViewModel = GoogleMapsViewModel();
 
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation();
+    getLocation();
   }
 
   @override
@@ -22,33 +21,17 @@ LatLng? currentLocation;
     super.dispose();
   }
 
-  Future<void> _getCurrentLocation() async {
-    try {
-      LocationPermission permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return;
-      }
-
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-
-      if (mounted) {
-        setState(() {
-          currentLocation = LatLng(position.latitude, position.longitude);
-          print('currentLocation: $currentLocation');
-        });
-      }
-    } catch (e) {
-      print('Error getting current location: $e');
-    }
+  Future<void> getLocation() async {
+    await mapsViewModel.getCurrentLocation();
+    print(
+        'State : ${mapsViewModel.state.latitude}, ${mapsViewModel.state.longitude},${mapsViewModel.state.currentLocation}}');
   }
-  
-   Set<Marker> createMarker() {
+
+  Set<Marker> createMarker() {
     return {
       Marker(
         markerId: MarkerId("current_location"),
-        position: currentLocation!,
+        position: mapsViewModel.state.currentLocation!,
         infoWindow: InfoWindow(title: "Your Current Location"),
       ),
     };
