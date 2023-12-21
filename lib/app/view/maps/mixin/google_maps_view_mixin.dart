@@ -3,15 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_box/app/view/maps/google_maps_view.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 mixin GoogleMapsViewMixin on State<GoogleMapsView>{
 late GoogleMapController mapController;
-  LatLng? currentLocation;
+final formKey = GlobalKey<FormBuilderState>();
+LatLng? currentLocation;
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
+  }
+
+  @override
+  void dispose() {
+    formKey.currentState?.reset();
+    super.dispose();
   }
 
   Future<void> _getCurrentLocation() async {
