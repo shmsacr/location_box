@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location_box/app/view/maps/google_maps_view.dart';
+import 'package:location_box/app/view/maps/view/google_maps_view.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
 mixin GoogleMapsViewMixin on State<GoogleMapsView>{
