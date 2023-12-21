@@ -6,10 +6,11 @@ import 'location_storage.dart';
 class LocationStorageImpl implements LocationStorage {
   static const String boxName = 'locationBox';
   @override
-  Future<void> addLocation({required Location location}) async {
+  Future<bool> addLocation({required Location location}) async {
     Box<Location> box = await Hive.openBox<Location>(boxName);
     await box.put(location.id, location);
     await box.close();
+    return true;
   }
 
   @override
