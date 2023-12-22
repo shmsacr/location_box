@@ -16,10 +16,11 @@ class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
     ));
     if (response) {
       emit(state.copyWith(
-        locations: [...state.locations!, location],
+        locations: List.from(state.locations ?? [])..add(location),
         isSaving: true,
       ));
     }
+    print('State : ${state.locations}');
   }
 
   Future<void> getLocations() async {
@@ -35,8 +36,18 @@ class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
     }
   }
 
+  void deleteCurrentLocation() {
+    emit(state.copyWith(
+      currentLocation: null,
+    ));
+  }
+  
+
   Future<void> getCurrentLocation() async {
     try {
+      emit(state.copyWith(
+        isLoading: true,
+      ));
       LocationPermission permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
         return;
@@ -49,10 +60,14 @@ class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
         currentLocation: LatLng(position.latitude, position.longitude),
         latitude: position.latitude,
         longitude: position.longitude,
+        isLoading: false,
       ));
       print(
           'State : ${state.latitude}, ${state.longitude},${state.currentLocation}}');
     } catch (e) {
+      emit(state.copyWith(
+        isLoading: false,
+      ));
       print('Error getting current location: $e');
     }
   }
