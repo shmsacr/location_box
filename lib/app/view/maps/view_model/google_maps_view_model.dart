@@ -5,18 +5,18 @@ import 'package:location_box/app/core/service/location_service/location_storage_
 import 'package:location_box/app/product/model/location/location.dart';
 import 'package:location_box/app/view/maps/view_model/state/google_maps_state.dart';
 
-class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
+final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   GoogleMapsViewModel() : super(GoogleMapsState());
 
-  final locationStorage = LocationStorageImpl();
+  final LocationStorageImpl _locationStorage = LocationStorageImpl();
+
   Future<void> saveLocation(Location location) async {
-    final response = await locationStorage.addLocation(location: location);
+    final response = await _locationStorage.addLocation(location: location);
     emit(state.copyWith(
       isSaving: false,
     ));
     if (response) {
       emit(state.copyWith(
-        locations: List.from(state.locations ?? [])..add(location),
         isSaving: true,
       ));
     }
@@ -24,7 +24,7 @@ class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   }
 
   Future<void> getLocations() async {
-    final response = await locationStorage.getAllLocations();
+    final response = await _locationStorage.getAllLocations();
     emit(state.copyWith(
       isLoading: false,
     ));
@@ -36,12 +36,24 @@ class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
     }
   }
 
-  void deleteCurrentLocation() {
+  Future<void> deleteLocation(Location location) async {
+    final response = await _locationStorage.deleteLocation(location: location);
     emit(state.copyWith(
-      currentLocation: null,
+      isDeleting: false,
     ));
+    try {
+      if (response) {
+        emit(state.copyWith(
+          isDeleting: true,
+        ));
+      }
+    } catch (e) {
+      emit(state.copyWith(
+        isDeleting: false,
+      ));
+      throw ('Error deleting location: $e');
+    }
   }
-  
 
   Future<void> getCurrentLocation() async {
     try {
@@ -68,7 +80,7 @@ class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
       emit(state.copyWith(
         isLoading: false,
       ));
-      print('Error getting current location: $e');
+      throw ('Error getting current location: $e');
     }
   }
 }
