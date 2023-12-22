@@ -1,24 +1,65 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:location_box/app/core/service/location_service/location_storage_impl.dart';
 import 'package:location_box/app/product/model/location/location.dart';
 import 'package:location_box/app/view/maps/view_model/state/google_maps_state.dart';
 
 final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   GoogleMapsViewModel() : super(GoogleMapsState());
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  final TextEditingController _imageController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  late final GoogleMapController _mapController;
+  final TextEditingController _titleController = TextEditingController();
+  final _formKey = GlobalKey<FormBuilderState>();
+
+  TextEditingController get addressController => _addressController;
+  TextEditingController get descriptionController => _descriptionController;
+  TextEditingController get imageController => _imageController;
+  TextEditingController get phoneController => _phoneController;
+  TextEditingController get titleController => _titleController;
+  GlobalKey<FormBuilderState> get formKey => _formKey;
+  GoogleMapController get mapController => _mapController;
+
+  GoogleMapController? setMapController(GoogleMapController controller) {
+    _mapController = controller;
+    return _mapController;
+  }
 
   final LocationStorageImpl _locationStorage = LocationStorageImpl();
 
-  Future<void> saveLocation(Location location) async {
-    final response = await _locationStorage.addLocation(location: location);
-    emit(state.copyWith(
-      isSaving: false,
-    ));
-    if (response) {
+  Future<void> saveLocation() async {
+    if (_formKey.currentState!.saveAndValidate()) {
+      DateTime now = DateTime.now();
+      final String id = DateFormat('yyyyMMddHHmmss').format(now);
+      final int _id = int.parse(id);
+      print('ID : $_id');
+      final Location _location = Location.fromJson(
+        {
+          'id': _id,
+          'title': _formKey.currentState!.value['title'] ,
+          'address': _formKey.currentState!.value['address'],
+          'description': _formKey.currentState!.value['description'],
+          'image': _formKey.currentState!.value['image'],
+          'phone': _formKey.currentState!.value['phone'],
+          'latitude': state.latitude,
+          'longitude': state.longitude,
+        },
+      );
+      final response = await _locationStorage.addLocation(location: _location);
       emit(state.copyWith(
-        isSaving: true,
+        isSaving: false,
       ));
+      if (response) {
+        emit(state.copyWith(
+          isSaving: true,
+        ));
+      }
     }
     print('State : ${state.locations}');
   }
@@ -82,5 +123,11 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
       ));
       throw ('Error getting current location: $e');
     }
+  }
+
+  void deleteCurrentLocation() {
+    emit(state.copyWith(
+      currentLocation: null,
+    ));
   }
 }
