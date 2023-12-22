@@ -7,7 +7,9 @@ final class CustomDarkTheme implements CustomTheme {
   ThemeData get themeData => ThemeData(
       useMaterial3: true,
       colorScheme: CustomColorSchemes.darkColorScheme,
-      floatingActionButtonTheme: floatingActionButtonThemeData);
+      floatingActionButtonTheme: floatingActionButtonThemeData,
+      inputDecorationTheme: inputDecorationTheme,
+      );
 
   @override
   FloatingActionButtonThemeData get floatingActionButtonThemeData =>

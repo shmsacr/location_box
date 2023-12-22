@@ -10,6 +10,7 @@ final class CustomLightTheme implements CustomTheme {
         colorScheme: CustomColorSchemes.lightColorScheme,
         floatingActionButtonTheme: floatingActionButtonThemeData,
         fontFamily: GoogleFonts.roboto().fontFamily,
+        inputDecorationTheme: inputDecorationTheme,
       );
 
   @override
