@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:kartal/kartal.dart';
 import 'package:location_box/app/product/model/location/location.dart';
 import 'package:location_box/app/view/maps/mixin/google_maps_view_mixin.dart';
 import 'package:location_box/app/view/maps/view_model/google_maps_view_model.dart';
 import 'package:location_box/app/view/maps/view_model/state/google_maps_state.dart';
+import 'package:location_box/gen/assets.gen.dart';
+import 'package:lottie/lottie.dart';
 
 @RoutePage()
 class GoogleMapsView extends StatefulWidget {
@@ -22,13 +25,6 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
   Widget build(BuildContext context) {
     return BlocBuilder<GoogleMapsViewModel, GoogleMapsState>(
       builder: (context, state) {
-        if (state.isLoading ?? true) {
-          return Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        }
         return Scaffold(
           resizeToAvoidBottomInset: false,
           extendBody: true,
@@ -155,23 +151,38 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                   }),
             ],
           ),
-          body: GoogleMap(
-            mapType: MapType.normal,
-            initialCameraPosition: state.currentLocation == null
-                ? const CameraPosition(
-                    target: LatLng(37.42796133580664, -122.085749655962),
-                    zoom: 14.4746,
-                  )
-                : CameraPosition(
-                    target: state.currentLocation!,
-                    zoom: 14.4746,
+          body: Stack(
+            children: [
+              GoogleMap(
+                mapType: MapType.normal,
+                initialCameraPosition: state.currentLocation == null
+                    ? const CameraPosition(
+                        target: LatLng(37.42796133580664, -122.085749655962),
+                        zoom: 14.4746,
+                      )
+                    : CameraPosition(
+                        target: state.currentLocation!,
+                        zoom: 14.4746,
+                      ),
+                onMapCreated: (GoogleMapController controller) {
+                  mapController = controller;
+                },
+                markers: state.currentLocation != null
+                    ? createMarker(position: state.currentLocation!)
+                    : {},
+              ),
+              if (state.isLoading)
+                Container(
+                  color: Colors.grey.withOpacity(0.6),
+                  child: Center(
+                    child: Lottie.asset(
+                      Assets.lottie.locationLottie,
+                      width: context.sized.width * 0.5,
+                      height: context.sized.height * 0.5,
+                    ),
                   ),
-            onMapCreated: (GoogleMapController controller) {
-              mapController = controller;
-            },
-            markers: state.currentLocation != null
-                ? createMarker(position: state.currentLocation!)
-                : {},
+                ),
+            ],
           ),
         );
       },
