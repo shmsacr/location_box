@@ -22,15 +22,23 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
   Widget build(BuildContext context) {
     return BlocBuilder<GoogleMapsViewModel, GoogleMapsState>(
       builder: (context, state) {
+        if (state.isLoading ?? true) {
+          return Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
         return Scaffold(
           resizeToAvoidBottomInset: false,
           extendBody: true,
           appBar: AppBar(
             title: const Text('Google Maps'),
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back),
-              onPressed: () => Navigator.pop(context),
-            ),
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  context.router.pop();
+                }),
             actions: [
               IconButton(
                   icon: Icon(Icons.save),
@@ -73,6 +81,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                                     child: Column(
                                       children: [
                                         FormBuilderTextField(
+                                          controller: titleController,
                                           name: 'title',
                                           decoration: InputDecoration(
                                             labelText: 'Title',
@@ -112,26 +121,17 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                                             TextButton(
                                               onPressed: () {
                                                 Location location = Location(
-                                                  id: 0,
-                                                  title: formKey.currentState!
-                                                      .value["title"].toString(),
-                                                      
-                                                  address: formKey.currentState!
-                                                      .value['address']
-                                                      .toString(),
-                                                  latitude: state
-                                                      .latitude,
-                                                  longitude: state
-                                                    
-                                                      .longitude,
-                                                  phoneNumber: formKey
-                                                      .currentState!
-                                                      .value['phoneNumber']
-                                                      
-                                                      .toString(),
-                                                  description: formKey
-                                                      .currentState!
-                                                      .value['description']                                                      .toString(),
+                                                  id: 4,
+                                                  title: titleController.text,
+                                                  address:
+                                                      addressController.text,
+                                                  latitude: state.latitude,
+                                                  longitude: state.longitude,
+                                                  phoneNumber:
+                                                      phoneController.text,
+                                                  description:
+                                                      descriptionController
+                                                          .text,
                                                 );
                                                 context
                                                     .read<GoogleMapsViewModel>()
@@ -169,7 +169,9 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
             onMapCreated: (GoogleMapController controller) {
               mapController = controller;
             },
-            markers: state.currentLocation != null ? createMarker() : {},
+            markers: state.currentLocation != null
+                ? createMarker(position: state.currentLocation!)
+                : {},
           ),
         );
       },
