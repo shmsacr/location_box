@@ -15,4 +15,51 @@ final class CustomLightTheme implements CustomTheme {
   @override
   FloatingActionButtonThemeData get floatingActionButtonThemeData =>
       FloatingActionButtonThemeData();
+      
+        @override
+        // TODO: implement inputDecorationTheme
+        InputDecorationTheme get inputDecorationTheme => InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: Colors.grey,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: Colors.grey,
+            ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: CustomColorSchemes.lightColorScheme.error,
+            ),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: Colors.red,
+            ),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(
+              color: Colors.grey,
+            ),
+          ),
+          labelStyle: TextStyle(
+            color: Colors.grey,
+          ),
+          hintStyle: TextStyle(
+            color: Colors.grey,
+          ),
+          errorStyle: TextStyle(
+            color: Colors.red,
+          ),
+        );
 }
