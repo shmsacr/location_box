@@ -20,13 +20,21 @@ Location _$LocationFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$Location {
+  @HiveField(1)
   int? get id => throw _privateConstructorUsedError;
+  @HiveField(2)
   double? get latitude => throw _privateConstructorUsedError;
+  @HiveField(3)
   double? get longitude => throw _privateConstructorUsedError;
+  @HiveField(4)
   String? get title => throw _privateConstructorUsedError;
+  @HiveField(5)
   String? get description => throw _privateConstructorUsedError;
+  @HiveField(6)
   String? get picture => throw _privateConstructorUsedError;
+  @HiveField(7)
   String? get address => throw _privateConstructorUsedError;
+  @HiveField(8)
   String? get phoneNumber => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -41,14 +49,14 @@ abstract class $LocationCopyWith<$Res> {
       _$LocationCopyWithImpl<$Res, Location>;
   @useResult
   $Res call(
-      {int? id,
-      double? latitude,
-      double? longitude,
-      String? title,
-      String? description,
-      String? picture,
-      String? address,
-      String? phoneNumber});
+      {@HiveField(1) int? id,
+      @HiveField(2) double? latitude,
+      @HiveField(3) double? longitude,
+      @HiveField(4) String? title,
+      @HiveField(5) String? description,
+      @HiveField(6) String? picture,
+      @HiveField(7) String? address,
+      @HiveField(8) String? phoneNumber});
 }
 
 /// @nodoc
@@ -119,14 +127,14 @@ abstract class _$$LocationImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int? id,
-      double? latitude,
-      double? longitude,
-      String? title,
-      String? description,
-      String? picture,
-      String? address,
-      String? phoneNumber});
+      {@HiveField(1) int? id,
+      @HiveField(2) double? latitude,
+      @HiveField(3) double? longitude,
+      @HiveField(4) String? title,
+      @HiveField(5) String? description,
+      @HiveField(6) String? picture,
+      @HiveField(7) String? address,
+      @HiveField(8) String? phoneNumber});
 }
 
 /// @nodoc
@@ -188,55 +196,49 @@ class __$$LocationImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$LocationImpl with DiagnosticableTreeMixin implements _Location {
+@HiveField(0)
+class _$LocationImpl implements _Location {
   const _$LocationImpl(
-      {this.id,
-      this.latitude,
-      this.longitude,
-      this.title,
-      this.description,
-      this.picture,
-      this.address,
-      this.phoneNumber});
+      {@HiveField(1) this.id,
+      @HiveField(2) this.latitude,
+      @HiveField(3) this.longitude,
+      @HiveField(4) this.title,
+      @HiveField(5) this.description,
+      @HiveField(6) this.picture,
+      @HiveField(7) this.address,
+      @HiveField(8) this.phoneNumber});
 
   factory _$LocationImpl.fromJson(Map<String, dynamic> json) =>
       _$$LocationImplFromJson(json);
 
   @override
+  @HiveField(1)
   final int? id;
   @override
+  @HiveField(2)
   final double? latitude;
   @override
+  @HiveField(3)
   final double? longitude;
   @override
+  @HiveField(4)
   final String? title;
   @override
+  @HiveField(5)
   final String? description;
   @override
+  @HiveField(6)
   final String? picture;
   @override
+  @HiveField(7)
   final String? address;
   @override
+  @HiveField(8)
   final String? phoneNumber;
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+  String toString() {
     return 'Location(id: $id, latitude: $latitude, longitude: $longitude, title: $title, description: $description, picture: $picture, address: $address, phoneNumber: $phoneNumber)';
-  }
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties
-      ..add(DiagnosticsProperty('type', 'Location'))
-      ..add(DiagnosticsProperty('id', id))
-      ..add(DiagnosticsProperty('latitude', latitude))
-      ..add(DiagnosticsProperty('longitude', longitude))
-      ..add(DiagnosticsProperty('title', title))
-      ..add(DiagnosticsProperty('description', description))
-      ..add(DiagnosticsProperty('picture', picture))
-      ..add(DiagnosticsProperty('address', address))
-      ..add(DiagnosticsProperty('phoneNumber', phoneNumber));
   }
 
   @override
@@ -279,33 +281,41 @@ class _$LocationImpl with DiagnosticableTreeMixin implements _Location {
 
 abstract class _Location implements Location {
   const factory _Location(
-      {final int? id,
-      final double? latitude,
-      final double? longitude,
-      final String? title,
-      final String? description,
-      final String? picture,
-      final String? address,
-      final String? phoneNumber}) = _$LocationImpl;
+      {@HiveField(1) final int? id,
+      @HiveField(2) final double? latitude,
+      @HiveField(3) final double? longitude,
+      @HiveField(4) final String? title,
+      @HiveField(5) final String? description,
+      @HiveField(6) final String? picture,
+      @HiveField(7) final String? address,
+      @HiveField(8) final String? phoneNumber}) = _$LocationImpl;
 
   factory _Location.fromJson(Map<String, dynamic> json) =
       _$LocationImpl.fromJson;
 
   @override
+  @HiveField(1)
   int? get id;
   @override
+  @HiveField(2)
   double? get latitude;
   @override
+  @HiveField(3)
   double? get longitude;
   @override
+  @HiveField(4)
   String? get title;
   @override
+  @HiveField(5)
   String? get description;
   @override
+  @HiveField(6)
   String? get picture;
   @override
+  @HiveField(7)
   String? get address;
   @override
+  @HiveField(8)
   String? get phoneNumber;
   @override
   @JsonKey(ignore: true)
