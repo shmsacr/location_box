@@ -197,12 +197,9 @@ class _CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormBuilderTextField(
-      controller: controller,
       name: name,
-      
       decoration: InputDecoration(
         labelText: labelText,
-      
       ),
     );
   }
