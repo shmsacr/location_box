@@ -21,7 +21,7 @@ Location _$LocationFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$Location {
   @HiveField(1)
-  int? get id => throw _privateConstructorUsedError;
+  String? get id => throw _privateConstructorUsedError;
   @HiveField(2)
   double? get latitude => throw _privateConstructorUsedError;
   @HiveField(3)
@@ -36,6 +36,8 @@ mixin _$Location {
   String? get address => throw _privateConstructorUsedError;
   @HiveField(8)
   String? get phoneNumber => throw _privateConstructorUsedError;
+  @HiveField(9)
+  DateTime? get createdAt => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -49,14 +51,15 @@ abstract class $LocationCopyWith<$Res> {
       _$LocationCopyWithImpl<$Res, Location>;
   @useResult
   $Res call(
-      {@HiveField(1) int? id,
+      {@HiveField(1) String? id,
       @HiveField(2) double? latitude,
       @HiveField(3) double? longitude,
       @HiveField(4) String? title,
       @HiveField(5) String? description,
       @HiveField(6) String? picture,
       @HiveField(7) String? address,
-      @HiveField(8) String? phoneNumber});
+      @HiveField(8) String? phoneNumber,
+      @HiveField(9) DateTime? createdAt});
 }
 
 /// @nodoc
@@ -80,12 +83,13 @@ class _$LocationCopyWithImpl<$Res, $Val extends Location>
     Object? picture = freezed,
     Object? address = freezed,
     Object? phoneNumber = freezed,
+    Object? createdAt = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       latitude: freezed == latitude
           ? _value.latitude
           : latitude // ignore: cast_nullable_to_non_nullable
@@ -114,6 +118,10 @@ class _$LocationCopyWithImpl<$Res, $Val extends Location>
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
               as String?,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ) as $Val);
   }
 }
@@ -127,14 +135,15 @@ abstract class _$$LocationImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {@HiveField(1) int? id,
+      {@HiveField(1) String? id,
       @HiveField(2) double? latitude,
       @HiveField(3) double? longitude,
       @HiveField(4) String? title,
       @HiveField(5) String? description,
       @HiveField(6) String? picture,
       @HiveField(7) String? address,
-      @HiveField(8) String? phoneNumber});
+      @HiveField(8) String? phoneNumber,
+      @HiveField(9) DateTime? createdAt});
 }
 
 /// @nodoc
@@ -156,12 +165,13 @@ class __$$LocationImplCopyWithImpl<$Res>
     Object? picture = freezed,
     Object? address = freezed,
     Object? phoneNumber = freezed,
+    Object? createdAt = freezed,
   }) {
     return _then(_$LocationImpl(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as String?,
       latitude: freezed == latitude
           ? _value.latitude
           : latitude // ignore: cast_nullable_to_non_nullable
@@ -190,6 +200,10 @@ class __$$LocationImplCopyWithImpl<$Res>
           ? _value.phoneNumber
           : phoneNumber // ignore: cast_nullable_to_non_nullable
               as String?,
+      createdAt: freezed == createdAt
+          ? _value.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }
@@ -206,14 +220,15 @@ class _$LocationImpl implements _Location {
       @HiveField(5) this.description,
       @HiveField(6) this.picture,
       @HiveField(7) this.address,
-      @HiveField(8) this.phoneNumber});
+      @HiveField(8) this.phoneNumber,
+      @HiveField(9) this.createdAt});
 
   factory _$LocationImpl.fromJson(Map<String, dynamic> json) =>
       _$$LocationImplFromJson(json);
 
   @override
   @HiveField(1)
-  final int? id;
+  final String? id;
   @override
   @HiveField(2)
   final double? latitude;
@@ -235,10 +250,13 @@ class _$LocationImpl implements _Location {
   @override
   @HiveField(8)
   final String? phoneNumber;
+  @override
+  @HiveField(9)
+  final DateTime? createdAt;
 
   @override
   String toString() {
-    return 'Location(id: $id, latitude: $latitude, longitude: $longitude, title: $title, description: $description, picture: $picture, address: $address, phoneNumber: $phoneNumber)';
+    return 'Location(id: $id, latitude: $latitude, longitude: $longitude, title: $title, description: $description, picture: $picture, address: $address, phoneNumber: $phoneNumber, createdAt: $createdAt)';
   }
 
   @override
@@ -257,13 +275,15 @@ class _$LocationImpl implements _Location {
             (identical(other.picture, picture) || other.picture == picture) &&
             (identical(other.address, address) || other.address == address) &&
             (identical(other.phoneNumber, phoneNumber) ||
-                other.phoneNumber == phoneNumber));
+                other.phoneNumber == phoneNumber) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, id, latitude, longitude, title,
-      description, picture, address, phoneNumber);
+      description, picture, address, phoneNumber, createdAt);
 
   @JsonKey(ignore: true)
   @override
@@ -281,21 +301,22 @@ class _$LocationImpl implements _Location {
 
 abstract class _Location implements Location {
   const factory _Location(
-      {@HiveField(1) final int? id,
+      {@HiveField(1) final String? id,
       @HiveField(2) final double? latitude,
       @HiveField(3) final double? longitude,
       @HiveField(4) final String? title,
       @HiveField(5) final String? description,
       @HiveField(6) final String? picture,
       @HiveField(7) final String? address,
-      @HiveField(8) final String? phoneNumber}) = _$LocationImpl;
+      @HiveField(8) final String? phoneNumber,
+      @HiveField(9) final DateTime? createdAt}) = _$LocationImpl;
 
   factory _Location.fromJson(Map<String, dynamic> json) =
       _$LocationImpl.fromJson;
 
   @override
   @HiveField(1)
-  int? get id;
+  String? get id;
   @override
   @HiveField(2)
   double? get latitude;
@@ -317,6 +338,9 @@ abstract class _Location implements Location {
   @override
   @HiveField(8)
   String? get phoneNumber;
+  @override
+  @HiveField(9)
+  DateTime? get createdAt;
   @override
   @JsonKey(ignore: true)
   _$$LocationImplCopyWith<_$LocationImpl> get copyWith =>

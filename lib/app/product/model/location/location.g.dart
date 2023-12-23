@@ -17,7 +17,7 @@ class LocationAdapter extends TypeAdapter<Location> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Location(
-      id: fields[1] as int?,
+      id: fields[1] as String?,
       latitude: fields[2] as double?,
       longitude: fields[3] as double?,
       title: fields[4] as String?,
@@ -25,13 +25,14 @@ class LocationAdapter extends TypeAdapter<Location> {
       picture: fields[6] as String?,
       address: fields[7] as String?,
       phoneNumber: fields[8] as String?,
+      createdAt: fields[9] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Location obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -47,7 +48,9 @@ class LocationAdapter extends TypeAdapter<Location> {
       ..writeByte(7)
       ..write(obj.address)
       ..writeByte(8)
-      ..write(obj.phoneNumber);
+      ..write(obj.phoneNumber)
+      ..writeByte(9)
+      ..write(obj.createdAt);
   }
 
   @override
@@ -67,7 +70,7 @@ class LocationAdapter extends TypeAdapter<Location> {
 
 _$LocationImpl _$$LocationImplFromJson(Map<String, dynamic> json) =>
     _$LocationImpl(
-      id: json['id'] as int?,
+      id: json['id'] as String?,
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
       title: json['title'] as String?,
@@ -75,6 +78,9 @@ _$LocationImpl _$$LocationImplFromJson(Map<String, dynamic> json) =>
       picture: json['picture'] as String?,
       address: json['address'] as String?,
       phoneNumber: json['phoneNumber'] as String?,
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime.parse(json['createdAt'] as String),
     );
 
 Map<String, dynamic> _$$LocationImplToJson(_$LocationImpl instance) =>
@@ -87,4 +93,5 @@ Map<String, dynamic> _$$LocationImplToJson(_$LocationImpl instance) =>
       'picture': instance.picture,
       'address': instance.address,
       'phoneNumber': instance.phoneNumber,
+      'createdAt': instance.createdAt?.toIso8601String(),
     };

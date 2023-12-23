@@ -9,7 +9,7 @@ part 'location.g.dart';
 class Location with _$Location {
   @HiveField(0)
   const factory Location({
-    @HiveField(1) int? id,
+    @HiveField(1) String? id,
     @HiveField(2) double? latitude,
     @HiveField(3) double? longitude,
     @HiveField(4) String? title,
@@ -17,6 +17,7 @@ class Location with _$Location {
     @HiveField(6) String? picture,
     @HiveField(7) String? address,
     @HiveField(8) String? phoneNumber,
+    @HiveField(9) DateTime? createdAt,
   }) = _Location;
 
   factory Location.fromJson(Map<String, Object?> json) =>
