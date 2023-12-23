@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:location_box/app/core/service/location_service/location_storage_impl.dart';
 import 'package:location_box/app/product/model/location/location.dart';
 import 'package:location_box/app/view/maps/view_model/state/google_maps_state.dart';
+import 'package:uuid/uuid.dart';
 
 final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   GoogleMapsViewModel() : super(GoogleMapsState());
@@ -34,21 +35,24 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   final LocationStorageImpl _locationStorage = LocationStorageImpl();
 
   Future<void> saveLocation() async {
-    if (_formKey.currentState!.saveAndValidate()) {
+    print('_formKey.currentState: ${_formKey.currentState}');
+    if (_formKey.currentState?.saveAndValidate() ?? false) {
       DateTime now = DateTime.now();
-      final String id = DateFormat('yyyyMMddHHmmss').format(now);
-      final int _id = int.parse(id);
+      final String? _id = Uuid().v4();
+      final x = DateFormat('yyyyMMddHHss').format(now);
+      print(x);
       print('ID : $_id');
       final Location _location = Location.fromJson(
         {
           'id': _id,
-          'title': _formKey.currentState!.value['title'] ,
+          'title': _formKey.currentState!.value['title'],
           'address': _formKey.currentState!.value['address'],
           'description': _formKey.currentState!.value['description'],
           'image': _formKey.currentState!.value['image'],
           'phone': _formKey.currentState!.value['phone'],
           'latitude': state.latitude,
           'longitude': state.longitude,
+          'createdAt': now.toString(),
         },
       );
       final response = await _locationStorage.addLocation(location: _location);
@@ -58,9 +62,13 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
       if (response) {
         emit(state.copyWith(
           isSaving: true,
+          locations: state.locations == null
+              ? [_location]
+              : [...state.locations!, _location],
         ));
       }
     }
+    print('_formKey.currentState: ${_formKey.currentState}');
     print('State : ${state.locations}');
   }
 
@@ -84,8 +92,12 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
     ));
     try {
       if (response) {
+        if (location.id != null) {
+          state.locations!.removeWhere((element) => element.id == location.id);
+        }
         emit(state.copyWith(
           isDeleting: true,
+          locations: state.locations,
         ));
       }
     } catch (e) {
@@ -107,7 +119,7 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
       }
 
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        desiredAccuracy: LocationAccuracy.low,
       );
       emit(state.copyWith(
         currentLocation: LatLng(position.latitude, position.longitude),
