@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:location_box/app/core/service/location_service/location_storage_impl.dart';
+import 'package:location_box/app/product/init/state/base/base_cubit.dart';
 import 'package:location_box/app/product/model/location/location.dart';
 import 'package:location_box/app/view/maps/view_model/state/google_maps_state.dart';
+import 'package:uuid/uuid.dart';
 
-final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
+final class GoogleMapsViewModel extends BaseCubit<GoogleMapsState> {
   GoogleMapsViewModel() : super(GoogleMapsState());
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -34,34 +34,39 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   final LocationStorageImpl _locationStorage = LocationStorageImpl();
 
   Future<void> saveLocation() async {
-    if (_formKey.currentState!.saveAndValidate()) {
-      DateTime now = DateTime.now();
-      final String id = DateFormat('yyyyMMddHHmmss').format(now);
-      final int _id = int.parse(id);
-      print('ID : $_id');
-      final Location _location = Location.fromJson(
-        {
-          'id': _id,
-          'title': _formKey.currentState!.value['title'] ,
-          'address': _formKey.currentState!.value['address'],
-          'description': _formKey.currentState!.value['description'],
-          'image': _formKey.currentState!.value['image'],
-          'phone': _formKey.currentState!.value['phone'],
-          'latitude': state.latitude,
-          'longitude': state.longitude,
-        },
-      );
-      final response = await _locationStorage.addLocation(location: _location);
-      emit(state.copyWith(
-        isSaving: false,
-      ));
-      if (response) {
-        emit(state.copyWith(
-          isSaving: true,
-        ));
-      }
-    }
-    print('State : ${state.locations}');
+    safeCall(
+      () async {
+        if (_formKey.currentState!.saveAndValidate()) {
+          final String id = Uuid().v4();
+
+          print('ID : $id');
+          final Location _location = Location.fromJson(
+            {
+              'id': id,
+              'title': _formKey.currentState!.value['title'],
+              'address': _formKey.currentState!.value['address'],
+              'description': _formKey.currentState!.value['description'],
+              'image': _formKey.currentState!.value['image'],
+              'phone': _formKey.currentState!.value['phone'],
+              'latitude': state.latitude,
+              'longitude': state.longitude,
+            },
+          );
+          final response =
+              await _locationStorage.addLocation(location: _location);
+          emit(state.copyWith(
+            isSaving: false,
+          ));
+          if (response) {
+            emit(state.copyWith(
+              locations: List.from([...state.locations!, _location]),
+              isSaving: true,
+            ));
+          }
+        }
+        print('State : ${state.locations}');
+      },
+    );
   }
 
   Future<void> getLocations() async {
@@ -79,11 +84,15 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
 
   Future<void> deleteLocation(Location location) async {
     final response = await _locationStorage.deleteLocation(location: location);
+
     emit(state.copyWith(
       isDeleting: false,
     ));
     try {
       if (response) {
+        if (location.id != null) {
+          state.locations!.removeWhere((element) => element.id == location.id);
+        }
         emit(state.copyWith(
           isDeleting: true,
         ));
@@ -107,7 +116,7 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
       }
 
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        desiredAccuracy: LocationAccuracy.low,
       );
       emit(state.copyWith(
         currentLocation: LatLng(position.latitude, position.longitude),
