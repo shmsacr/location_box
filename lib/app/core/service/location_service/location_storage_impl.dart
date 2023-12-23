@@ -36,7 +36,7 @@ final class LocationStorageImpl implements LocationStorage {
     Location? retrievedLocation = box.get(location.id);
     await box.close();
     return (retrievedLocation) ??
-        Location(id: 0, title: '', address: '', latitude: 0, longitude: 0);
+        Location(id: '', title: '', address: '', latitude: 0, longitude: 0);
   }
 
   @override
