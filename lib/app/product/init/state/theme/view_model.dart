@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:location_box/app/product/init/state/base/base_cubit.dart';
 import 'package:location_box/app/product/init/state/theme/state.dart';
 
-final class AppThemeViewModel extends Cubit<AppThemeState> {
+final class AppThemeViewModel extends BaseCubit<AppThemeState>{
   AppThemeViewModel() : super(AppThemeState());
 
   void changeThemeMode() {

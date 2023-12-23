@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:location_box/app/core/service/location_service/location_storage_impl.dart';
+import 'package:location_box/app/product/init/state/base/base_cubit.dart';
 import 'package:location_box/app/product/model/location/location.dart';
 import 'package:location_box/app/view/maps/view_model/state/google_maps_state.dart';
 import 'package:uuid/uuid.dart';
 
-final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
+final class GoogleMapsViewModel extends BaseCubit<GoogleMapsState> {
   GoogleMapsViewModel() : super(GoogleMapsState());
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -39,8 +38,6 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
     if (_formKey.currentState?.saveAndValidate() ?? false) {
       DateTime now = DateTime.now();
       final String? _id = Uuid().v4();
-      final x = DateFormat('yyyyMMddHHss').format(now);
-      print(x);
       print('ID : $_id');
       final Location _location = Location.fromJson(
         {
@@ -87,6 +84,7 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
 
   Future<void> deleteLocation(Location location) async {
     final response = await _locationStorage.deleteLocation(location: location);
+
     emit(state.copyWith(
       isDeleting: false,
     ));
