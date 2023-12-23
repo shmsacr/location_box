@@ -42,7 +42,7 @@ final class HomeView extends StatelessWidget {
       ),
       body: BlocBuilder<GoogleMapsViewModel, GoogleMapsState>(
           builder: (context, state) {
-        if (state.locations != null) {
+        if (state.locations != null && state.locations!.isNotEmpty) {
           return ListView.builder(
               itemCount: state.locations!.length,
               itemBuilder: (context, index) {
