@@ -1,14 +1,14 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-part 'location.freezed.dart';
-part 'location.g.dart';
+part 'location_model.freezed.dart';
+part 'location_model.g.dart';
 
 @freezed
 @HiveType(typeId: 0)
-class Location with _$Location {
+class LocationModel with _$LocationModel {
   @HiveField(0)
-  const factory Location({
+  const factory LocationModel({
     @HiveField(1) String? id,
     @HiveField(2) double? latitude,
     @HiveField(3) double? longitude,
@@ -18,8 +18,8 @@ class Location with _$Location {
     @HiveField(7) String? address,
     @HiveField(8) String? phoneNumber,
     @HiveField(9) DateTime? createdAt,
-  }) = _Location;
+  }) = _LocationModel;
 
-  factory Location.fromJson(Map<String, Object?> json) =>
-      _$LocationFromJson(json);
+  factory LocationModel.fromJson(Map<String, Object?> json) =>
+      _$LocationModelFromJson(json);
 }

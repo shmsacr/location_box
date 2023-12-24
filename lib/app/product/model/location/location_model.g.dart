@@ -1,22 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'location.dart';
+part of 'location_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class LocationAdapter extends TypeAdapter<Location> {
+class LocationModelAdapter extends TypeAdapter<LocationModel> {
   @override
   final int typeId = 0;
 
   @override
-  Location read(BinaryReader reader) {
+  LocationModel read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Location(
+    return LocationModel(
       id: fields[1] as String?,
       latitude: fields[2] as double?,
       longitude: fields[3] as double?,
@@ -30,7 +30,7 @@ class LocationAdapter extends TypeAdapter<Location> {
   }
 
   @override
-  void write(BinaryWriter writer, Location obj) {
+  void write(BinaryWriter writer, LocationModel obj) {
     writer
       ..writeByte(9)
       ..writeByte(1)
@@ -59,7 +59,7 @@ class LocationAdapter extends TypeAdapter<Location> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is LocationAdapter &&
+      other is LocationModelAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
@@ -68,8 +68,8 @@ class LocationAdapter extends TypeAdapter<Location> {
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$LocationImpl _$$LocationImplFromJson(Map<String, dynamic> json) =>
-    _$LocationImpl(
+_$LocationModelImpl _$$LocationModelImplFromJson(Map<String, dynamic> json) =>
+    _$LocationModelImpl(
       id: json['id'] as String?,
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
@@ -83,7 +83,7 @@ _$LocationImpl _$$LocationImplFromJson(Map<String, dynamic> json) =>
           : DateTime.parse(json['createdAt'] as String),
     );
 
-Map<String, dynamic> _$$LocationImplToJson(_$LocationImpl instance) =>
+Map<String, dynamic> _$$LocationModelImplToJson(_$LocationModelImpl instance) =>
     <String, dynamic>{
       'id': instance.id,
       'latitude': instance.latitude,

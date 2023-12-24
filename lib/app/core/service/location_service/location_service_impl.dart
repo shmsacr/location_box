@@ -13,7 +13,7 @@ class LocationServiceImpl extends LocationService {
         Placemark place = placemarks[0];
         return "${place.street}, ${place.locality}, ${place.postalCode}, ${place.country}";
       }
-      return "Adres bulunamadi";
+      return "Adres bulunamad";
     } catch (e) {
       throw Exception("Adres çevirme hatasi: $e");
     }
