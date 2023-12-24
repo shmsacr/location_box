@@ -37,6 +37,7 @@ dependencies:
 
   # location
   geolocator: ^10.1.0
+  geocoding: ^2.1.1
 
   # Database
   hive: ^2.2.3
