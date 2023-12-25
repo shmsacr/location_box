@@ -17,9 +17,10 @@ mixin GoogleMapsViewMixin on State<GoogleMapsView> {
 
   @override
   void dispose() {
+    googleMapsViewModel.mapController.dispose();
     googleMapsViewModel.formKey.currentState?.reset();
     googleMapsViewModel.formKey.currentState?.dispose();
-
+    googleMapsViewModel.addressController.dispose();
     googleMapsViewModel.descriptionController.dispose();
     googleMapsViewModel.imageController.dispose();
     googleMapsViewModel.titleController.dispose();
