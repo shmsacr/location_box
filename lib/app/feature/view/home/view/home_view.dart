@@ -75,17 +75,30 @@ class CustomCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: ListTile(
-        title: Text(state.locations![index].title ?? ''),
-        subtitle: Text(state.locations![index].address ?? ''),
-        trailing: IconButton(
-          icon: Icon(Icons.delete),
-          onPressed: () {
-            context
-                .read<GoogleMapsViewModel>()
-                .deleteLocation(state.locations![index]);
-          },
-        ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                child: Icon(Icons.image, size: 100),
+              ),
+              Column(
+                children: [
+                  Text(state.locations![index].title!),
+                  Text(state.locations![index].address!),
+                  
+                ],)
+            ],
+          ),
+          Row(
+            children: [
+              IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
+              IconButton(onPressed: () {}, icon: Icon(Icons.share)),
+              IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+              IconButton(onPressed: () {}, icon: Icon(Icons.favorite_border)),
+            ],
+          ),
+        ],
       ),
     );
   }
