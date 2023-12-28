@@ -4,6 +4,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_box/app/core/service/location_service/location_service_impl.dart';
 import 'package:location_box/app/core/service/location_storage/location_storage_impl.dart';
+import 'package:location_box/app/core/service/photo_storage/photo_storage_impl.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
 import 'package:location_box/app/product/init/state/base/base_cubit.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
@@ -18,6 +19,7 @@ final class GoogleMapsViewModel extends BaseCubit<GoogleMapsState> {
   late final GoogleMapController _mapController;
   final TextEditingController _titleController = TextEditingController();
   final _formKey = GlobalKey<FormBuilderState>();
+  final PhotoStorageImpl _photoStorage = PhotoStorageImpl();
 
   TextEditingController get addressController => _addressController;
   TextEditingController get descriptionController => _descriptionController;
@@ -96,16 +98,17 @@ final class GoogleMapsViewModel extends BaseCubit<GoogleMapsState> {
     }
   }
 
-  Future<void> deleteLocation(LocationModel location) async {
-    final response = await _locationStorage.deleteLocation(location: location);
+  Future<void> deleteLocation(String? locationId) async {
+    final response =
+        await _locationStorage.deleteLocation(locationId: locationId);
 
     emit(state.copyWith(
       isDeleting: false,
     ));
     try {
       if (response) {
-        if (location.id != null) {
-          state.locations!.removeWhere((element) => element.id == location.id);
+        if (locationId != null) {
+          state.locations!.removeWhere((element) => element.id == locationId);
         }
         emit(state.copyWith(
           isDeleting: true,
@@ -140,7 +143,6 @@ final class GoogleMapsViewModel extends BaseCubit<GoogleMapsState> {
         latitude: position.latitude,
         longitude: position.longitude,
         isLoading: false,
-      
       ));
       print(
           'State : ${state.latitude}, ${state.longitude},${state.currentLocation}}');
@@ -156,5 +158,39 @@ final class GoogleMapsViewModel extends BaseCubit<GoogleMapsState> {
     emit(state.copyWith(
       currentLocation: null,
     ));
+  }
+
+  Future<void> pickedPhoto() async {
+    try {
+      final response = await _photoStorage.pickPhoto();
+      if (response != null) {
+        emit(state.copyWith(
+          image: response,
+        ));
+      }
+    } catch (e) {
+      throw ('Error picking photo: $e');
+    }
+  }
+
+  Future<void> takePhoto() async {
+    try {
+      final response = await _photoStorage.takePhoto();
+      if (response != null) {
+        emit(state.copyWith(
+          image: response,
+        ));
+      }
+    } catch (e) {
+      throw ('Error taking photo: $e');
+    }
+  }
+
+  void deletePhoto() {
+    print('deletePhoto :${state.image}');
+    emit(state.copyWith(
+      image: null,
+    ));
+    print('deletePhoto :${state.image}');
   }
 }
