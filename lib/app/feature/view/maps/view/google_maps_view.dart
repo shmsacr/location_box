@@ -24,7 +24,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GoogleMapsViewModel, GoogleMapsState>(
-      builder: (context, state) {
+      builder: (_context, state) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           extendBody: true,
@@ -33,9 +33,8 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
             leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
-                  context.read<GoogleMapsViewModel>().deleteCurrentLocation();
-                  print('CurrentLOCAAAAAALL : ${state.currentLocation}');
-
+                  _context.read<GoogleMapsViewModel>().deleteCurrentLocation();
+                  _context.read<GoogleMapsViewModel>().deletePhoto();
                   context.router.pop();
                 }),
             actions: [
@@ -43,91 +42,117 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                 icon: Icon(Icons.save),
                 onPressed: () {
                   showModalBottomSheet<void>(
-                      isScrollControlled: true,
-                      context: context,
-                      builder: (context) {
-                        return SingleChildScrollView(
-                          child: Padding(
-                            padding: MediaQuery.of(context).viewInsets,
-                            child: Column(
-                              children: [
-                                Row(
+                          isScrollControlled: true,
+                          context: context,
+                          builder: (_) {
+                            return SingleChildScrollView(
+                              child: Padding(
+                                padding: MediaQuery.of(context).viewInsets,
+                                child: Column(
                                   children: [
-                                    Ink(
-                                      child: InkWell(
-                                        onTap: () {},
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Icon(
-                                            Icons.image,
-                                            size: 100,
+                                    Row(
+                                      children: [
+                                        Ink(
+                                          child: InkWell(
+                                            onTap: () =>
+                                                buildShowModalBottomSheet(
+                                                    context),
+                                            child: state.image != null
+                                                ? Image.file(
+                                                    state.image!,
+                                                    width: 100,
+                                                    height: 100,
+                                                  )
+                                                : Stack(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.image,
+                                                        size: 100,
+                                                      ),
+                                                      Positioned(
+                                                        bottom: 0,
+                                                        right: 0,
+                                                        child: Icon(
+                                                          Icons.add,
+                                                          size: 30,
+                                                          weight: 100,
+                                                          color: const Color
+                                                              .fromARGB(
+                                                              255, 2, 240, 18),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text('Title'),
-                                        Text('Address'),
+                                        Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text('Title'),
+                                            Text('Address'),
+                                          ],
+                                        ),
                                       ],
+                                    ),
+                                    FormBuilder(
+                                      key: googleMapsViewModel.formKey,
+                                      child: Column(
+                                        children: [
+                                          _CustomTextField(
+                                            controller: googleMapsViewModel
+                                                .titleController,
+                                            name: FormNameEnum.title.value,
+                                            labelText: 'Title',
+                                          ),
+                                          _CustomTextField(
+                                            controller: googleMapsViewModel
+                                                .addressController,
+                                            name: FormNameEnum.address.value,
+                                            labelText: 'Address',
+                                          ),
+                                          _CustomTextField(
+                                            controller: googleMapsViewModel
+                                                .descriptionController,
+                                            name:
+                                                FormNameEnum.description.value,
+                                            labelText: 'Description',
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              TextButton(
+                                                onPressed: () =>
+                                                    context.router.pop(),
+                                                child: Text('Cancel'),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  context
+                                                      .read<
+                                                          GoogleMapsViewModel>()
+                                                      .saveLocation();
+                                                  if (state.isSaving) {
+                                                    print(
+                                                        'state : ${state.locations}');
+                                                  }
+                                                },
+                                                child: Text('Save'),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ),
-                                FormBuilder(
-                                  key: googleMapsViewModel.formKey,
-                                  child: Column(
-                                    children: [
-                                      _CustomTextField(
-                                        controller:
-                                            googleMapsViewModel.titleController,
-                                        name: FormNameEnum.title.value,
-                                        labelText: 'Title',
-                                      ),
-                                      _CustomTextField(
-                                        controller: googleMapsViewModel
-                                            .addressController,
-                                        name: FormNameEnum.address.value,
-                                        labelText: 'Address',
-                                      ),
-                                      _CustomTextField(
-                                        controller: googleMapsViewModel
-                                            .descriptionController,
-                                        name: FormNameEnum.description.value,
-                                        labelText: 'Description',
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                context.router.pop(),
-                                            child: Text('Cancel'),
-                                          ),
-                                          TextButton(
-                                            onPressed: () {
-                                              context
-                                                  .read<GoogleMapsViewModel>()
-                                                  .saveLocation();
-                                              if (state.isSaving) {
-                                                print(
-                                                    'state : ${state.locations}');
-                                              }
-                                            },
-                                            child: Text('Save'),
-                                          ),
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      });
+                              ),
+                            );
+                          })
+                      .then((value) =>
+                          context.read<GoogleMapsViewModel>().deletePhoto());
+                  ;
                 },
               ),
               IconButton(
@@ -175,6 +200,73 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                     ),
                   ),
                 ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> buildShowModalBottomSheet(BuildContext context) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      builder: (_) {
+        return SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 0.2,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Text(
+                "Lütfen yükleme tipini seçiniz",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              InkWell(
+                onTap: () async {
+                  await context.read<GoogleMapsViewModel>().takePhoto();
+                },
+                child: const Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: Icon(
+                        Icons.add_a_photo,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      'Kamera',
+                      style: TextStyle(color: Colors.purple),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              InkWell(
+                onTap: () async {
+                  await context.read<GoogleMapsViewModel>().pickedPhoto();
+                },
+                child: const Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: Icon(
+                        Icons.image,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      'Galeri',
+                      style: TextStyle(color: Colors.purple),
+                    )
+                  ],
+                ),
+              )
             ],
           ),
         );
