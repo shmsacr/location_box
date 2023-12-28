@@ -15,9 +15,9 @@ final class LocationStorageImpl implements LocationStorage {
   }
 
   @override
-  Future<bool> deleteLocation({required LocationModel location}) async {
+  Future<bool> deleteLocation({required String? locationId}) async {
     Box<LocationModel> box = await Hive.openBox<LocationModel>(_boxName);
-    await box.delete(location.id);
+    await box.delete(locationId);
     await box.close();
     return true;
   }

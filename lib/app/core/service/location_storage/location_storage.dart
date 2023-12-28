@@ -4,6 +4,6 @@ abstract class LocationStorage {
   Future<bool> addLocation({required LocationModel location});
   Future<LocationModel> getLocation({required LocationModel location});
   Future<List<LocationModel>> getAllLocations();
-  Future<bool> deleteLocation({required LocationModel location});
+  Future<bool> deleteLocation({required String locationId});
   Future<LocationModel> updateLocation({required LocationModel location});
 }
