@@ -83,18 +83,27 @@ class CustomCardWidget extends StatelessWidget {
                 child: Icon(Icons.image, size: 100),
               ),
               Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(state.locations![index].title!),
                   Text(state.locations![index].address!),
-                  
-                ],)
+                ],
+              )
             ],
           ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              IconButton(onPressed: () {}, icon: Icon(Icons.location_on)),
               IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
               IconButton(onPressed: () {}, icon: Icon(Icons.share)),
-              IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+              IconButton(
+                  onPressed: () {
+                    context
+                        .read<GoogleMapsViewModel>()
+                        .deleteLocation(state.locations![index].id!);
+                  },
+                  icon: Icon(Icons.delete)),
               IconButton(onPressed: () {}, icon: Icon(Icons.favorite_border)),
             ],
           ),
