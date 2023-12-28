@@ -17,7 +17,6 @@ mixin GoogleMapsViewMixin on State<GoogleMapsView> {
 
   @override
   void dispose() {
-    
     super.dispose();
   }
 
