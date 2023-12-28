@@ -17,6 +17,7 @@ dependencies:
   equatable: ^2.0.5
   google_maps_flutter: ^2.5.0
   get_it: ^7.6.4
+  permission_handler: ^11.1.0
 
   # utils
   google_fonts: ^6.1.0
@@ -28,6 +29,7 @@ dependencies:
   uuid: ^4.2.2
   intl: ^0.18.1
   logger: ^2.0.2+1
+  image_picker: ^1.0.5
 
   # State Management
   flutter_bloc: ^8.1.3
