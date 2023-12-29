@@ -177,6 +177,7 @@ final class GoogleMapsViewModel extends BaseCubit<GoogleMapsState> {
     try {
       final response = await _photoStorage.takePhoto();
       if (response != null) {
+        await Future.delayed(Duration(seconds: 1));
         emit(state.copyWith(
           image: response,
         ));
