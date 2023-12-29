@@ -25,6 +25,8 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
   Widget build(BuildContext context) {
     return BlocBuilder<GoogleMapsViewModel, GoogleMapsState>(
       builder: (_context, state) {
+        final currentImage = state.image;
+        print('currentImage : $currentImage');
         return Scaffold(
           resizeToAvoidBottomInset: false,
           extendBody: true,
@@ -43,7 +45,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                 onPressed: () {
                   showModalBottomSheet<void>(
                           isScrollControlled: true,
-                          context: context,
+                          context: _context,
                           builder: (_) {
                             return SingleChildScrollView(
                               child: Padding(
@@ -57,9 +59,9 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                                             onTap: () =>
                                                 buildShowModalBottomSheet(
                                                     context),
-                                            child: state.image != null
+                                            child: currentImage != null
                                                 ? Image.file(
-                                                    state.image!,
+                                                    currentImage,
                                                     width: 100,
                                                     height: 100,
                                                   )
@@ -208,7 +210,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
   }
 
   Future<void> buildShowModalBottomSheet(BuildContext context) async {
-    await showModalBottomSheet<void>(
+    return await showModalBottomSheet<void>(
       context: context,
       builder: (_) {
         return SizedBox(
@@ -227,6 +229,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
               InkWell(
                 onTap: () async {
                   await context.read<GoogleMapsViewModel>().takePhoto();
+                  Navigator.pop(context);
                 },
                 child: const Row(
                   children: [
@@ -250,6 +253,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
               InkWell(
                 onTap: () async {
                   await context.read<GoogleMapsViewModel>().pickedPhoto();
+                  Navigator.pop(context);
                 },
                 child: const Row(
                   children: [
