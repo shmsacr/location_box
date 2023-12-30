@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -6,11 +7,10 @@ import 'package:location_box/app/core/service/location_service/location_service_
 import 'package:location_box/app/core/service/location_storage/location_storage_impl.dart';
 import 'package:location_box/app/core/service/photo_storage/photo_storage_impl.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
-import 'package:location_box/app/product/init/state/base/base_cubit.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
 import 'package:uuid/uuid.dart';
 
-final class GoogleMapsViewModel extends BaseCubit<GoogleMapsState> {
+final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   GoogleMapsViewModel() : super(GoogleMapsState());
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -160,38 +160,5 @@ final class GoogleMapsViewModel extends BaseCubit<GoogleMapsState> {
     ));
   }
 
-  Future<void> pickedPhoto() async {
-    try {
-      final response = await _photoStorage.pickPhoto();
-      if (response != null) {
-        emit(state.copyWith(
-          image: response,
-        ));
-      }
-    } catch (e) {
-      throw ('Error picking photo: $e');
-    }
-  }
-
-  Future<void> takePhoto() async {
-    try {
-      final response = await _photoStorage.takePhoto();
-      if (response != null) {
-        await Future.delayed(Duration(seconds: 1));
-        emit(state.copyWith(
-          image: response,
-        ));
-      }
-    } catch (e) {
-      throw ('Error taking photo: $e');
-    }
-  }
-
-  void deletePhoto() {
-    print('deletePhoto :${state.image}');
-    emit(state.copyWith(
-      image: null,
-    ));
-    print('deletePhoto :${state.image}');
-  }
+ 
 }
