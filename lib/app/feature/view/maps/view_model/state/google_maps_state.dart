@@ -13,6 +13,7 @@ final class GoogleMapsState extends Equatable {
   final LatLng? currentLocation;
   final double? latitude;
   final double? longitude;
+  final List<Marker>? markers;
   GoogleMapsState({
     this.locations,
     this.location,
@@ -22,6 +23,7 @@ final class GoogleMapsState extends Equatable {
     this.currentLocation,
     this.latitude,
     this.longitude,
+    this.markers,
   });
 
   GoogleMapsState copyWith({
@@ -33,6 +35,7 @@ final class GoogleMapsState extends Equatable {
     LatLng? currentLocation,
     double? latitude,
     double? longitude,
+    List<Marker>? markers,
   }) {
     return GoogleMapsState(
       locations: locations ?? this.locations,
@@ -43,6 +46,7 @@ final class GoogleMapsState extends Equatable {
       currentLocation: currentLocation ?? this.currentLocation,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
+      markers: markers ?? this.markers,
     );
   }
 
@@ -56,5 +60,6 @@ final class GoogleMapsState extends Equatable {
         currentLocation,
         latitude,
         longitude,
+        markers,
       ];
 }
