@@ -5,7 +5,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_box/app/core/service/location_service/location_service_impl.dart';
 import 'package:location_box/app/core/service/location_storage/location_storage_impl.dart';
-import 'package:location_box/app/core/service/photo_storage/photo_storage_impl.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
 import 'package:uuid/uuid.dart';
@@ -19,7 +18,6 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   late final GoogleMapController _mapController;
   final TextEditingController _titleController = TextEditingController();
   final _formKey = GlobalKey<FormBuilderState>();
-  final PhotoStorageImpl _photoStorage = PhotoStorageImpl();
 
   TextEditingController get addressController => _addressController;
   TextEditingController get descriptionController => _descriptionController;
@@ -42,6 +40,9 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
       if (_formKey.currentState?.saveAndValidate() ?? false) {
         DateTime now = DateTime.now();
         final String? _id = Uuid().v4();
+        emit(state.copyWith(
+          latitude: state.latitude! + 0.11,
+        ));
         print('ID : $_id');
         final LocationModel _location = LocationModel.fromJson(
           {
@@ -81,15 +82,17 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   }
 
   Future<void> getLocations() async {
+    getCurrentLocation();
     emit(state.copyWith(
       isLoading: true,
     ));
     try {
       final response = await _locationStorage.getAllLocations();
+      final markers = await multipleMarker(response);
       emit(state.copyWith(
-        locations: response.isNotEmpty ? response : null,
-        isLoading: false,
-      ));
+          locations: response.isNotEmpty ? response : null,
+          isLoading: false,
+          markers: markers));
     } catch (e) {
       emit(state.copyWith(
         isLoading: false,
@@ -160,5 +163,31 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
     ));
   }
 
- 
+  Future<List<Marker>> multipleMarker(List<LocationModel>? response) async {
+    List<Marker> markers = [];
+    markers.add(Marker(
+      
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      markerId: MarkerId('current_location'),
+      position: LatLng(state.latitude!, state.longitude!),
+      infoWindow: InfoWindow(
+        title: 'Current Location',
+      ),
+    ));
+    if (response != null) {
+      for (var positon in response) {
+        print('Position : ${positon.latitude}, ${positon.longitude}');
+        markers.add(Marker(
+          markerId: MarkerId(positon.id!),
+          position: LatLng(positon.latitude!, positon.longitude!),
+          infoWindow: InfoWindow(
+            title: positon.title,
+            snippet: positon.description,
+          ),
+        ));
+      }
+    }
+
+    return markers;
+  }
 }
