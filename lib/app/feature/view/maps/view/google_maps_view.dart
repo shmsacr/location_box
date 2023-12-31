@@ -181,9 +181,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                 onMapCreated: (GoogleMapController controller) {
                   googleMapsViewModel.setMapController(controller);
                 },
-                markers: state.currentLocation != null
-                    ? createMarker(position: state.currentLocation!)
-                    : {},
+                markers: state.markers!.toSet(),
               ),
               if (state.isLoading)
                 Container(
