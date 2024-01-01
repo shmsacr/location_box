@@ -4,10 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kartal/kartal.dart';
-import 'package:location_box/app/view/maps/enum/form_builder_name_enum.dart';
-import 'package:location_box/app/view/maps/mixin/google_maps_view_mixin.dart';
-import 'package:location_box/app/view/maps/view_model/google_maps_view_model.dart';
-import 'package:location_box/app/view/maps/view_model/state/google_maps_state.dart';
+import 'package:location_box/app/feature/view/maps/enum/form_builder_name_enum.dart';
+import 'package:location_box/app/feature/view/maps/mixin/google_maps_view_mixin.dart';
+import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_model.dart';
+import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
 import 'package:location_box/gen/assets.gen.dart';
 import 'package:lottie/lottie.dart';
 
@@ -24,7 +24,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GoogleMapsViewModel, GoogleMapsState>(
-      builder: (context, state) {
+      builder: (_context, state) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
           extendBody: true,
@@ -33,9 +33,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
             leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
-                  context.read<GoogleMapsViewModel>().deleteCurrentLocation();
-                  print('CurrentLOCAAAAAALL : ${state.currentLocation}');
-
+                  _context.read<GoogleMapsViewModel>().deleteCurrentLocation();
                   context.router.pop();
                 }),
             actions: [
@@ -44,8 +42,8 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                 onPressed: () {
                   showModalBottomSheet<void>(
                       isScrollControlled: true,
-                      context: context,
-                      builder: (context) {
+                      context: _context,
+                      builder: (_) {
                         return SingleChildScrollView(
                           child: Padding(
                             padding: MediaQuery.of(context).viewInsets,
@@ -55,14 +53,34 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                                   children: [
                                     Ink(
                                       child: InkWell(
-                                        onTap: () {},
-                                        child: const Padding(
-                                          padding: EdgeInsets.all(8.0),
-                                          child: Icon(
-                                            Icons.image,
-                                            size: 100,
-                                          ),
-                                        ),
+                                        onTap: () =>
+                                            buildShowModalBottomSheet(_context),
+                                        child: imageFile != null
+                                            ? Image.file(
+                                                imageFile!,
+                                                width: 100,
+                                                height: 100,
+                                              )
+                                            : Stack(
+                                                children: [
+                                                  Icon(
+                                                    Icons.image,
+                                                    size: 100,
+                                                  ),
+                                                  Positioned(
+                                                    bottom: 0,
+                                                    right: 0,
+                                                    child: Icon(
+                                                      Icons.add,
+                                                      size: 30,
+                                                      weight: 100,
+                                                      color:
+                                                          const Color.fromARGB(
+                                                              255, 2, 240, 18),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                       ),
                                     ),
                                     Column(
@@ -127,7 +145,10 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                             ),
                           ),
                         );
-                      });
+                      }).then((value) => setState(() {
+                        imageFile = null;
+                      }));
+                  ;
                 },
               ),
               IconButton(
@@ -160,9 +181,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                 onMapCreated: (GoogleMapController controller) {
                   googleMapsViewModel.setMapController(controller);
                 },
-                markers: state.currentLocation != null
-                    ? createMarker(position: state.currentLocation!)
-                    : {},
+                markers: state.markers!.toSet(),
               ),
               if (state.isLoading)
                 Container(
@@ -175,6 +194,75 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                     ),
                   ),
                 ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> buildShowModalBottomSheet(BuildContext context) async {
+    return await showModalBottomSheet<void>(
+      context: context,
+      builder: (_) {
+        return SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 0.2,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Text(
+                "Lütfen yükleme tipini seçiniz",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              InkWell(
+                onTap: () async {
+                  await takePhoto();
+                  Navigator.pop(context);
+                },
+                child: const Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: Icon(
+                        Icons.add_a_photo,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      'Kamera',
+                      style: TextStyle(color: Colors.purple),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.02,
+              ),
+              InkWell(
+                onTap: () async {
+                  await pickPhoto();
+                  Navigator.pop(context);
+                },
+                child: const Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(4.0),
+                      child: Icon(
+                        Icons.image,
+                        color: Colors.black,
+                      ),
+                    ),
+                    Text(
+                      'Galeri',
+                      style: TextStyle(color: Colors.purple),
+                    )
+                  ],
+                ),
+              )
             ],
           ),
         );
@@ -199,10 +287,8 @@ class _CustomTextField extends StatelessWidget {
     return FormBuilderTextField(
       controller: controller,
       name: name,
-      
       decoration: InputDecoration(
         labelText: labelText,
-      
       ),
     );
   }

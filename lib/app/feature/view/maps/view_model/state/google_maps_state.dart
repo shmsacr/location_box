@@ -1,16 +1,19 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location_box/app/product/model/location/location.dart';
+import 'package:location_box/app/product/model/location/location_model.dart';
 
 final class GoogleMapsState extends Equatable {
-  final List<Location>? locations;
-  final Location? location;
+  final List<LocationModel>? locations;
+  final LocationModel? location;
   final bool isLoading;
   final bool isSaving;
   final bool isDeleting;
   final LatLng? currentLocation;
   final double? latitude;
   final double? longitude;
+  final List<Marker>? markers;
   GoogleMapsState({
     this.locations,
     this.location,
@@ -20,17 +23,19 @@ final class GoogleMapsState extends Equatable {
     this.currentLocation,
     this.latitude,
     this.longitude,
+    this.markers,
   });
 
   GoogleMapsState copyWith({
-    List<Location>? locations,
-    Location? location,
+    List<LocationModel>? locations,
+    LocationModel? location,
     bool? isLoading,
     bool? isSaving,
     bool? isDeleting,
     LatLng? currentLocation,
     double? latitude,
     double? longitude,
+    List<Marker>? markers,
   }) {
     return GoogleMapsState(
       locations: locations ?? this.locations,
@@ -41,6 +46,7 @@ final class GoogleMapsState extends Equatable {
       currentLocation: currentLocation ?? this.currentLocation,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
+      markers: markers ?? this.markers,
     );
   }
 
@@ -54,5 +60,6 @@ final class GoogleMapsState extends Equatable {
         currentLocation,
         latitude,
         longitude,
+        markers,
       ];
 }
