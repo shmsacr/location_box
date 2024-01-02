@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -79,9 +81,18 @@ class CustomCardWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                child: Icon(Icons.image, size: 100),
-              ),
+              state.locations![index].picture != null
+                  ? Container(
+                      child: Image.file(
+                        File(state.locations![index].picture!),
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    )
+                  : Container(
+                      child: Icon(Icons.image, size: 100),
+                    ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
