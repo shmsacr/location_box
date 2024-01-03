@@ -10,8 +10,9 @@ import 'package:location_box/app/feature/view/maps/enum/form_builder_name_enum.d
 import 'package:location_box/app/feature/view/maps/mixin/google_maps_view_mixin.dart';
 import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_model.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
-import 'package:location_box/gen/assets.gen.dart';
 import 'package:lottie/lottie.dart';
+
+import '../../../../../gen/src/asset/assets.gen.dart';
 
 @RoutePage()
 class GoogleMapsView extends StatefulWidget {
@@ -190,7 +191,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                   color: Colors.grey.withOpacity(0.6),
                   child: Center(
                     child: Lottie.asset(
-                      Assets.lottie.locationLottie,
+                      Assets.lottie.locationLottie.path,
                       width: context.sized.width * 0.5,
                       height: context.sized.height * 0.5,
                     ),
