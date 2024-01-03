@@ -11,6 +11,7 @@ import 'package:location_box/app/core/service/location_service/location_service_
 import 'package:location_box/app/core/service/location_storage/location_storage_impl.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
+import 'package:location_box/gen/src/asset/assets.gen.dart';
 import 'package:uuid/uuid.dart';
 
 final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
@@ -169,6 +170,7 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
 
   Future<List<Marker>> multipleMarker(List<LocationModel>? response) async {
     List<Marker> markers = [];
+    final icon = await _createMarkerImageFromAsset(Assets.icons.icStar.path);
     markers.add(Marker(
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       markerId: MarkerId('current_location'),
@@ -181,14 +183,13 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
       for (var position in response) {
         if (position.picture != null) {
           final Uint8List markerIcon =
-              await getBytesFromAsset(position.picture!,100);
+              await getBytesFromAsset(position.picture!, 100);
           markers.add(Marker(
-            icon: BitmapDescriptor.fromBytes(markerIcon),
+            icon: icon,
             markerId: MarkerId(position.id!),
             position: LatLng(position.latitude!, position.longitude!),
             infoWindow: InfoWindow(
               title: position.title,
-              
             ),
           ));
         } else {
@@ -219,5 +220,11 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
     } else {
       throw Exception('File not found: $path');
     }
+  }
+
+  Future<BitmapDescriptor> _createMarkerImageFromAsset(String iconPath) async {
+    final icon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 5.5), iconPath);
+    return icon;
   }
 }
