@@ -17,11 +17,17 @@ class $AssetsIconsGen {
   AssetGenImage get icFavorite =>
       const AssetGenImage('assets/icons/ic_favorite.png');
 
+  /// File path: assets/icons/ic_gym.png
+  AssetGenImage get icGym => const AssetGenImage('assets/icons/ic_gym.png');
+
+  /// File path: assets/icons/ic_home.png
+  AssetGenImage get icHome => const AssetGenImage('assets/icons/ic_home.png');
+
   /// File path: assets/icons/ic_star.png
   AssetGenImage get icStar => const AssetGenImage('assets/icons/ic_star.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [icFavorite, icStar];
+  List<AssetGenImage> get values => [icFavorite, icGym, icHome, icStar];
 }
 
 class $AssetsLottieGen {
