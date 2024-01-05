@@ -20,8 +20,9 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _imageController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  late final GoogleMapController _mapController;
+  GoogleMapController? _mapController;
   final TextEditingController _titleController = TextEditingController();
+    final TextEditingController _iconController = TextEditingController();
   final _formKey = GlobalKey<FormBuilderState>();
 
   TextEditingController get addressController => _addressController;
@@ -29,8 +30,9 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   TextEditingController get imageController => _imageController;
   TextEditingController get phoneController => _phoneController;
   TextEditingController get titleController => _titleController;
+  TextEditingController get iconController => _iconController;
   GlobalKey<FormBuilderState> get formKey => _formKey;
-  GoogleMapController get mapController => _mapController;
+  GoogleMapController? get mapController => _mapController;
 
   GoogleMapController? setMapController(GoogleMapController controller) {
     _mapController = controller;
@@ -170,9 +172,11 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
 
   Future<List<Marker>> multipleMarker(List<LocationModel>? response) async {
     List<Marker> markers = [];
-    final icon = await _createMarkerImageFromAsset(Assets.icons.icStar.path);
+    final currentIcon =
+        await _createMarkerImageFromAsset(Assets.icons.icCurrent.path);
+    final icon = await _createMarkerImageFromAsset(Assets.icons.icFavorite.path);
     markers.add(Marker(
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      icon: currentIcon,
       markerId: MarkerId('current_location'),
       position: LatLng(state.latitude!, state.longitude!),
       infoWindow: InfoWindow(
@@ -182,8 +186,6 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
     if (response != null) {
       for (var position in response) {
         if (position.picture != null) {
-          final Uint8List markerIcon =
-              await getBytesFromAsset(position.picture!, 100);
           markers.add(Marker(
             icon: icon,
             markerId: MarkerId(position.id!),
