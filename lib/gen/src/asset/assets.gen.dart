@@ -13,6 +13,14 @@ import 'package:lottie/lottie.dart';
 class $AssetsIconsGen {
   const $AssetsIconsGen();
 
+  /// File path: assets/icons/ic_current.png
+  AssetGenImage get icCurrent =>
+      const AssetGenImage('assets/icons/ic_current.png');
+
+  /// File path: assets/icons/ic_default.png
+  AssetGenImage get icDefault =>
+      const AssetGenImage('assets/icons/ic_default.png');
+
   /// File path: assets/icons/ic_favorite.png
   AssetGenImage get icFavorite =>
       const AssetGenImage('assets/icons/ic_favorite.png');
@@ -27,7 +35,8 @@ class $AssetsIconsGen {
   AssetGenImage get icStar => const AssetGenImage('assets/icons/ic_star.png');
 
   /// List of all assets
-  List<AssetGenImage> get values => [icFavorite, icGym, icHome, icStar];
+  List<AssetGenImage> get values =>
+      [icCurrent, icDefault, icFavorite, icGym, icHome, icStar];
 }
 
 class $AssetsLottieGen {
