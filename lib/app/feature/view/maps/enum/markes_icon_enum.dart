@@ -1,10 +1,11 @@
 import 'package:location_box/gen/src/asset/assets.gen.dart';
 
 enum MarkerIcons {
-  ic_favorite, // No need to pass key and value in this case
+  ic_favorite, 
   ic_star,
   ic_gym,
-  ic_home
+  ic_home,
+  ic_default;
 }
 
 extension MarkerIconExtension on MarkerIcons {
@@ -19,7 +20,7 @@ extension MarkerIconExtension on MarkerIcons {
       case MarkerIcons.ic_home:
         return 'Home';
       default:
-        return 'Home';
+        return 'Default';
     }
   }
 
@@ -34,7 +35,7 @@ extension MarkerIconExtension on MarkerIcons {
       case MarkerIcons.ic_home:
         return Assets.icons.icHome.path;
       default:
-        return Assets.icons.icHome.path;
+        return Assets.icons.icDefault.path;
     }
   }
 }
