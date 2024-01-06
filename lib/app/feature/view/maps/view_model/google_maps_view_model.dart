@@ -1,4 +1,8 @@
+import 'dart:io';
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:geolocator/geolocator.dart';
@@ -7,6 +11,7 @@ import 'package:location_box/app/core/service/location_service/location_service_
 import 'package:location_box/app/core/service/location_storage/location_storage_impl.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
+import 'package:location_box/gen/src/asset/assets.gen.dart';
 import 'package:uuid/uuid.dart';
 
 final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
@@ -15,8 +20,9 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _imageController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
-  late final GoogleMapController _mapController;
+  GoogleMapController? _mapController;
   final TextEditingController _titleController = TextEditingController();
+    final TextEditingController _iconController = TextEditingController();
   final _formKey = GlobalKey<FormBuilderState>();
 
   TextEditingController get addressController => _addressController;
@@ -24,8 +30,9 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   TextEditingController get imageController => _imageController;
   TextEditingController get phoneController => _phoneController;
   TextEditingController get titleController => _titleController;
+  TextEditingController get iconController => _iconController;
   GlobalKey<FormBuilderState> get formKey => _formKey;
-  GoogleMapController get mapController => _mapController;
+  GoogleMapController? get mapController => _mapController;
 
   GoogleMapController? setMapController(GoogleMapController controller) {
     _mapController = controller;
@@ -34,7 +41,7 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
 
   final LocationStorageImpl _locationStorage = LocationStorageImpl();
 
-  Future<void> saveLocation() async {
+  Future<void> saveLocation(File? imagePath) async {
     try {
       print('_formKey.currentState: ${_formKey.currentState}');
       if (_formKey.currentState?.saveAndValidate() ?? false) {
@@ -50,7 +57,7 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
             'title': _formKey.currentState!.value['title'],
             'address': _formKey.currentState!.value['address'],
             'description': _formKey.currentState!.value['description'],
-            'image': _formKey.currentState!.value['image'],
+            'picture': imagePath?.path,
             'phone': _formKey.currentState!.value['phone'],
             'latitude': state.latitude,
             'longitude': state.longitude,
@@ -165,9 +172,11 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
 
   Future<List<Marker>> multipleMarker(List<LocationModel>? response) async {
     List<Marker> markers = [];
+    final currentIcon =
+        await _createMarkerImageFromAsset(Assets.icons.icCurrent.path);
+    final icon = await _createMarkerImageFromAsset(Assets.icons.icFavorite.path);
     markers.add(Marker(
-      
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      icon: currentIcon,
       markerId: MarkerId('current_location'),
       position: LatLng(state.latitude!, state.longitude!),
       infoWindow: InfoWindow(
@@ -175,19 +184,49 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
       ),
     ));
     if (response != null) {
-      for (var positon in response) {
-        print('Position : ${positon.latitude}, ${positon.longitude}');
-        markers.add(Marker(
-          markerId: MarkerId(positon.id!),
-          position: LatLng(positon.latitude!, positon.longitude!),
-          infoWindow: InfoWindow(
-            title: positon.title,
-            snippet: positon.description,
-          ),
-        ));
+      for (var position in response) {
+        if (position.picture != null) {
+          markers.add(Marker(
+            icon: icon,
+            markerId: MarkerId(position.id!),
+            position: LatLng(position.latitude!, position.longitude!),
+            infoWindow: InfoWindow(
+              title: position.title,
+            ),
+          ));
+        } else {
+          markers.add(Marker(
+            markerId: MarkerId(position.id!),
+            position: LatLng(position.latitude!, position.longitude!),
+            infoWindow: InfoWindow(
+              title: position.title,
+            ),
+          ));
+        }
       }
     }
 
     return markers;
+  }
+
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    final file = File(path);
+    if (await file.exists()) {
+      final bytes = await file.readAsBytes();
+      ui.Codec codec = await ui.instantiateImageCodec(bytes,
+          targetWidth: width); // Adjust width as needed
+      ui.FrameInfo fi = await codec.getNextFrame();
+      return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+          .buffer
+          .asUint8List();
+    } else {
+      throw Exception('File not found: $path');
+    }
+  }
+
+  Future<BitmapDescriptor> _createMarkerImageFromAsset(String iconPath) async {
+    final icon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(devicePixelRatio: 5.5), iconPath);
+    return icon;
   }
 }

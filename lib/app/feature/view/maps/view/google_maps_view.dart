@@ -8,8 +8,10 @@ import 'package:location_box/app/feature/view/maps/enum/form_builder_name_enum.d
 import 'package:location_box/app/feature/view/maps/mixin/google_maps_view_mixin.dart';
 import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_model.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
-import 'package:location_box/gen/assets.gen.dart';
+import 'package:location_box/app/feature/view/maps/widget/dropdown_widget.dart';
 import 'package:lottie/lottie.dart';
+
+import '../../../../../gen/src/asset/assets.gen.dart';
 
 @RoutePage()
 class GoogleMapsView extends StatefulWidget {
@@ -50,6 +52,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                             child: Column(
                               children: [
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Ink(
                                       child: InkWell(
@@ -87,8 +90,8 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text('Title'),
-                                        Text('Address'),
+                                        Text('latitude: ${state.latitude}'),
+                                        Text('longitude: ${state.longitude}'),
                                       ],
                                     ),
                                   ],
@@ -96,12 +99,20 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                                 FormBuilder(
                                   key: googleMapsViewModel.formKey,
                                   child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
+                                      SizedBox(
+                                        height: 16,
+                                      ),
                                       _CustomTextField(
                                         controller:
                                             googleMapsViewModel.titleController,
                                         name: FormNameEnum.title.value,
                                         labelText: 'Title',
+                                      ),
+                                      SizedBox(
+                                        height: 16,
                                       ),
                                       _CustomTextField(
                                         controller: googleMapsViewModel
@@ -109,12 +120,19 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                                         name: FormNameEnum.address.value,
                                         labelText: 'Address',
                                       ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
                                       _CustomTextField(
                                         controller: googleMapsViewModel
                                             .descriptionController,
                                         name: FormNameEnum.description.value,
                                         labelText: 'Description',
                                       ),
+                                      SizedBox(
+                                        height: 16,
+                                      ),
+                                      CustomDropDownWidget(iconController: googleMapsViewModel.iconController),
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.end,
@@ -128,7 +146,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                                             onPressed: () {
                                               context
                                                   .read<GoogleMapsViewModel>()
-                                                  .saveLocation();
+                                                  .saveLocation(imageFile);
                                               if (state.isSaving) {
                                                 print(
                                                     'state : ${state.locations}');
@@ -153,7 +171,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
               ),
               IconButton(
                   onPressed: () {
-                    googleMapsViewModel.mapController.animateCamera(
+                    googleMapsViewModel.mapController?.animateCamera(
                       CameraUpdate.newCameraPosition(
                         CameraPosition(
                           target: state.currentLocation!,
@@ -188,7 +206,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                   color: Colors.grey.withOpacity(0.6),
                   child: Center(
                     child: Lottie.asset(
-                      Assets.lottie.locationLottie,
+                      Assets.lottie.locationLottie.path,
                       width: context.sized.width * 0.5,
                       height: context.sized.height * 0.5,
                     ),

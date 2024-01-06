@@ -26,13 +26,14 @@ class LocationModelAdapter extends TypeAdapter<LocationModel> {
       address: fields[7] as String?,
       phoneNumber: fields[8] as String?,
       createdAt: fields[9] as DateTime?,
+      iconPath: fields[10] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, LocationModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(10)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -50,7 +51,9 @@ class LocationModelAdapter extends TypeAdapter<LocationModel> {
       ..writeByte(8)
       ..write(obj.phoneNumber)
       ..writeByte(9)
-      ..write(obj.createdAt);
+      ..write(obj.createdAt)
+      ..writeByte(10)
+      ..write(obj.iconPath);
   }
 
   @override
@@ -81,6 +84,7 @@ _$LocationModelImpl _$$LocationModelImplFromJson(Map<String, dynamic> json) =>
       createdAt: json['createdAt'] == null
           ? null
           : DateTime.parse(json['createdAt'] as String),
+      iconPath: json['iconPath'] as String?,
     );
 
 Map<String, dynamic> _$$LocationModelImplToJson(_$LocationModelImpl instance) =>
@@ -94,4 +98,5 @@ Map<String, dynamic> _$$LocationModelImplToJson(_$LocationModelImpl instance) =>
       'address': instance.address,
       'phoneNumber': instance.phoneNumber,
       'createdAt': instance.createdAt?.toIso8601String(),
+      'iconPath': instance.iconPath,
     };

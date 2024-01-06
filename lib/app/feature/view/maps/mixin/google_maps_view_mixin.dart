@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:location_box/app/feature/view/maps/view/google_maps_view.dart';
 import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_model.dart';
+import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
 
 mixin GoogleMapsViewMixin on State<GoogleMapsView> {
@@ -47,6 +49,11 @@ mixin GoogleMapsViewMixin on State<GoogleMapsView> {
       XFile? getFile =
           await ImagePicker().pickImage(source: ImageSource.camera);
       if (getFile != null) {
+        String dir = path.dirname(getFile.path);
+        final String pathName = DateFormat("Hms-m-ms-s").format(DateTime.now());
+        String newPath = path.join(dir, "location_box_${pathName}.jpg");
+        await getFile.saveTo(newPath);
+
         setState(() {
           imageFile = File(getFile.path);
         });

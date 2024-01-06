@@ -18,6 +18,7 @@ class LocationModel with _$LocationModel {
     @HiveField(7) String? address,
     @HiveField(8) String? phoneNumber,
     @HiveField(9) DateTime? createdAt,
+    @HiveField(10) String? iconPath,
   }) = _LocationModel;
 
   factory LocationModel.fromJson(Map<String, Object?> json) =>
