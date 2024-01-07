@@ -25,7 +25,9 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
         ),
         onSelected: (MarkerIcons? icon) {
           if (icon != null) {
-            widget.iconController?.value = TextEditingValue(text: icon.value);
+            debugPrint('Selected ${widget.iconController?.text}');
+            debugPrint('Selected ${widget.iconController?.value.text}');
+            debugPrint('Selected ${widget.iconController?.value}');
           }
         },
         dropdownMenuEntries:
@@ -34,6 +36,7 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
             return DropdownMenuEntry<MarkerIcons>(
               value: icon,
               label: icon.key,
+
               leadingIcon: Image.asset(icon.value, width: 30, height: 30),
             );
           },
