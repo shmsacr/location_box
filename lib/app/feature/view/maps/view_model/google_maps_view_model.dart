@@ -47,9 +47,6 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
       if (_formKey.currentState?.saveAndValidate() ?? false) {
         DateTime now = DateTime.now();
         final String? _id = Uuid().v4();
-        emit(state.copyWith(
-          latitude: state.latitude! + 0.11,
-        ));
         print('ID : $_id');
         final LocationModel _location = LocationModel.fromJson(
           {
