@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kartal/kartal.dart';
 import 'package:location_box/app/feature/view/maps/enum/form_builder_name_enum.dart';
@@ -9,14 +10,15 @@ import 'package:location_box/app/feature/view/maps/mixin/google_maps_view_mixin.
 import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_model.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
 import 'package:location_box/app/feature/view/maps/widget/dropdown_widget.dart';
+import 'package:location_box/app/product/model/location/location_model.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../../../gen/src/asset/assets.gen.dart';
 
 @RoutePage()
 class GoogleMapsView extends StatefulWidget {
-  const GoogleMapsView({super.key});
-
+  const GoogleMapsView({super.key, this.locationModel});
+  final LocationModel? locationModel;
   @override
   State<GoogleMapsView> createState() => _GoogleMapsViewState();
 }
@@ -187,13 +189,16 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
             children: [
               GoogleMap(
                 mapType: MapType.normal,
-                initialCameraPosition: state.currentLocation == null
-                    ? const CameraPosition(
-                        target: LatLng(42.42796133580664, -102.085749655962),
+                initialCameraPosition: widget.locationModel == null
+                    ? CameraPosition(
+                        target: state.currentLocation!,
                         zoom: 14.4746,
                       )
                     : CameraPosition(
-                        target: state.currentLocation!,
+                        target: LatLng(
+                          widget.locationModel!.latitude!,
+                          widget.locationModel!.longitude!,
+                        ),
                         zoom: 14.4746,
                       ),
                 onMapCreated: (GoogleMapController controller) {
