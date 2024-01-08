@@ -10,24 +10,24 @@ class CustomDropDownWidget extends StatefulWidget {
 }
 
 class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
+  MarkerIcons? selectedIcon;
   @override
   Widget build(BuildContext context) {
     return DropdownMenu<MarkerIcons>(
-        initialSelection: MarkerIcons.ic_default,
-        controller: widget.iconController,
-        leadingIcon: widget.iconController?.value.text != null
+        label: Text(selectedIcon?.key ?? 'Select Icon'),
+        leadingIcon: selectedIcon?.value == null
             ? Image.asset(MarkerIcons.ic_default.value, width: 30, height: 30)
-            : Image.asset(MarkerIcons.ic_default.value, width: 30, height: 30),
-        label: const Text('Icon'),
+            : Image.asset(widget.iconController!.text, width: 30, height: 30),
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
           contentPadding: EdgeInsets.symmetric(vertical: 5.0),
         ),
         onSelected: (MarkerIcons? icon) {
           if (icon != null) {
-            debugPrint('Selected ${widget.iconController?.text}');
-            debugPrint('Selected ${widget.iconController?.value.text}');
-            debugPrint('Selected ${widget.iconController?.value}');
+            setState(() {
+              selectedIcon = icon;
+              widget.iconController?.text = icon.value;
+            });
           }
         },
         dropdownMenuEntries:
@@ -36,7 +36,6 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
             return DropdownMenuEntry<MarkerIcons>(
               value: icon,
               label: icon.key,
-
               leadingIcon: Image.asset(icon.value, width: 30, height: 30),
             );
           },
