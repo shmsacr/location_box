@@ -106,7 +106,9 @@ class CustomCardWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(onPressed: () {}, icon: Icon(Icons.location_on)),
+              IconButton(onPressed: () {
+              context.router.push(GoogleMapsRoute( locationModel: state.locations![index]));
+              }, icon: Icon(Icons.location_on)),
               IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
               IconButton(
                   onPressed: () {
