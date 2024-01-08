@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
 import 'package:location_box/app/feature/view/home/view/home_view.dart';
 import 'package:location_box/app/feature/view/maps/view/google_maps_view.dart';
+import 'package:location_box/app/product/model/location/location_model.dart';
 
 part 'app_router.gr.dart';
 
