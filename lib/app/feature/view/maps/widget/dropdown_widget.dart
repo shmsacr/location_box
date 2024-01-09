@@ -10,10 +10,36 @@ class CustomDropDownWidget extends StatefulWidget {
 }
 
 class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
+  final ValueNotifier<MarkerIcons> _selectedIcon = ValueNotifier<MarkerIcons>(
+      MarkerIcons.ic_default); // default value for dropdown button
   MarkerIcons? selectedIcon;
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu<MarkerIcons>(
+    return ValueListenableBuilder(
+        valueListenable: _selectedIcon,
+        builder: (BuildContext context, MarkerIcons value, Widget? child) {
+          return DropdownButton<MarkerIcons>(
+            value: value,
+            onChanged: (MarkerIcons? newValue) {
+              _selectedIcon.value = newValue!;
+              widget.iconController?.text = newValue.value;
+            },
+            items: MarkerIcons.values
+                .map<DropdownMenuItem<MarkerIcons>>((MarkerIcons value) {
+              return DropdownMenuItem<MarkerIcons>(
+                value: value,
+                child: Row(
+                  children: [
+                    Image.asset(value.value, width: 30, height: 30),
+                    const SizedBox(width: 10),
+                    Text(value.key),
+                  ],
+                ),
+              );
+            }).toList(),
+          );
+        });
+    /* return DropdownMenu<MarkerIcons>(
         label: Text(selectedIcon?.key ?? 'Select Icon'),
         leadingIcon: selectedIcon?.value == null
             ? Image.asset(MarkerIcons.ic_default.value, width: 30, height: 30)
@@ -40,5 +66,6 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
             );
           },
         ).toList());
+  } */
   }
 }
