@@ -10,11 +10,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_box/app/core/service/location_service/location_service_impl.dart';
 import 'package:location_box/app/core/service/location_storage/location_storage_impl.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
+import 'package:location_box/app/feature/view/maps/widget/custom_info_windows.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
 import 'package:location_box/gen/src/asset/assets.gen.dart';
+import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
-final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
+final class GoogleMapsViewModel extends Cubit<GoogleMapsState>  {
   GoogleMapsViewModel() : super(GoogleMapsState());
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -74,8 +76,11 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
             icon: icon,
             markerId: MarkerId(_location.id!),
             position: LatLng(_location.latitude!, _location.longitude!),
-            infoWindow: InfoWindow(
-              title: _location.title,
+            infoWindow: CustomInfoWindows(
+              locationModel: _location,
+              onTap: () {
+                print('Marker tapped');
+              },
             ),
           );
           emit(state.copyWith(
@@ -202,8 +207,11 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
           icon: icon,
           markerId: MarkerId(position.id!),
           position: LatLng(position.latitude!, position.longitude!),
-          infoWindow: InfoWindow(
-            title: position.title,
+          infoWindow: CustomInfoWindows(
+            locationModel: position,
+            onTap: () {
+              print('Marker tapped');
+            },
           ),
         ));
       }
