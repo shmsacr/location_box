@@ -10,6 +10,7 @@ import 'package:location_box/app/feature/view/maps/mixin/google_maps_view_mixin.
 import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_model.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
 import 'package:location_box/app/feature/view/maps/widget/dropdown_widget.dart';
+import 'package:location_box/app/feature/view/maps/widget/mixin/custom_info_windows_mixin.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
 import 'package:lottie/lottie.dart';
 
