@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:location_box/app/feature/view/maps/view/google_maps_view.dart';
 import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_model.dart';
+import 'package:location_box/app/feature/view/maps/widget/custom_info_windows.dart';
 import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
 
@@ -93,4 +94,6 @@ mixin GoogleMapsViewMixin on State<GoogleMapsView> {
       ),
     };
   }
+
+  
 }

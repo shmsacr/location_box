@@ -10,22 +10,50 @@ class CustomDropDownWidget extends StatefulWidget {
 }
 
 class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
+  final ValueNotifier<MarkerIcons> _selectedIcon = ValueNotifier<MarkerIcons>(
+      MarkerIcons.ic_default); // default value for dropdown button
+  MarkerIcons? selectedIcon;
   @override
   Widget build(BuildContext context) {
-    return DropdownMenu<MarkerIcons>(
-        initialSelection: MarkerIcons.ic_default,
-        controller: widget.iconController,
-        leadingIcon: widget.iconController?.value.text != null
+    return ValueListenableBuilder(
+        valueListenable: _selectedIcon,
+        builder: (BuildContext context, MarkerIcons value, Widget? child) {
+          return DropdownButton<MarkerIcons>(
+            value: value,
+            onChanged: (MarkerIcons? newValue) {
+              _selectedIcon.value = newValue!;
+              widget.iconController?.text = newValue.value;
+            },
+            items: MarkerIcons.values
+                .map<DropdownMenuItem<MarkerIcons>>((MarkerIcons value) {
+              return DropdownMenuItem<MarkerIcons>(
+                value: value,
+                child: Row(
+                  children: [
+                    Image.asset(value.value, width: 30, height: 30),
+                    const SizedBox(width: 10),
+                    Text(value.key),
+                  ],
+                ),
+              );
+            }).toList(),
+          );
+        });
+    /* return DropdownMenu<MarkerIcons>(
+        label: Text(selectedIcon?.key ?? 'Select Icon'),
+        leadingIcon: selectedIcon?.value == null
             ? Image.asset(MarkerIcons.ic_default.value, width: 30, height: 30)
-            : Image.asset(MarkerIcons.ic_default.value, width: 30, height: 30),
-        label: const Text('Icon'),
+            : Image.asset(widget.iconController!.text, width: 30, height: 30),
         inputDecorationTheme: const InputDecorationTheme(
           filled: true,
           contentPadding: EdgeInsets.symmetric(vertical: 5.0),
         ),
         onSelected: (MarkerIcons? icon) {
           if (icon != null) {
-            widget.iconController?.value = TextEditingValue(text: icon.value);
+            setState(() {
+              selectedIcon = icon;
+              widget.iconController?.text = icon.value;
+            });
           }
         },
         dropdownMenuEntries:
@@ -38,5 +66,6 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
             );
           },
         ).toList());
+  } */
   }
 }

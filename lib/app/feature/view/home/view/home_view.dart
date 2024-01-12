@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_model.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
 import 'package:location_box/app/product/navigation/app_router.dart';
+import 'package:share_plus/share_plus.dart';
 
 @RoutePage()
 final class HomeView extends StatelessWidget {
@@ -105,9 +106,15 @@ class CustomCardWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              IconButton(onPressed: () {}, icon: Icon(Icons.location_on)),
+              IconButton(onPressed: () {
+              context.router.push(GoogleMapsRoute( locationModel: state.locations![index]));
+              }, icon: Icon(Icons.location_on)),
               IconButton(onPressed: () {}, icon: Icon(Icons.edit)),
-              IconButton(onPressed: () {}, icon: Icon(Icons.share)),
+              IconButton(
+                  onPressed: () {
+                    Share.share("https://www.google.com/maps/search/?api=1&query=${state.locations![index].latitude},${state.locations![index].longitude}");
+                  },
+                  icon: Icon(Icons.share)),
               IconButton(
                   onPressed: () {
                     context

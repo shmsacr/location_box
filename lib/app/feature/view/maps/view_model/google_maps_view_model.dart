@@ -10,11 +10,13 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_box/app/core/service/location_service/location_service_impl.dart';
 import 'package:location_box/app/core/service/location_storage/location_storage_impl.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
+import 'package:location_box/app/feature/view/maps/widget/custom_info_windows.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
 import 'package:location_box/gen/src/asset/assets.gen.dart';
+import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
-final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
+final class GoogleMapsViewModel extends Cubit<GoogleMapsState>  {
   GoogleMapsViewModel() : super(GoogleMapsState());
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -22,7 +24,7 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   final TextEditingController _phoneController = TextEditingController();
   GoogleMapController? _mapController;
   final TextEditingController _titleController = TextEditingController();
-    final TextEditingController _iconController = TextEditingController();
+  final TextEditingController? _iconController = TextEditingController();
   final _formKey = GlobalKey<FormBuilderState>();
 
   TextEditingController get addressController => _addressController;
@@ -30,7 +32,7 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
   TextEditingController get imageController => _imageController;
   TextEditingController get phoneController => _phoneController;
   TextEditingController get titleController => _titleController;
-  TextEditingController get iconController => _iconController;
+  TextEditingController? get iconController => _iconController;
   GlobalKey<FormBuilderState> get formKey => _formKey;
   GoogleMapController? get mapController => _mapController;
 
@@ -47,10 +49,8 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
       if (_formKey.currentState?.saveAndValidate() ?? false) {
         DateTime now = DateTime.now();
         final String? _id = Uuid().v4();
-        emit(state.copyWith(
-          latitude: state.latitude! + 0.11,
-        ));
         print('ID : $_id');
+        emit(state.copyWith(latitude: state.latitude! + 0.01));
         final LocationModel _location = LocationModel.fromJson(
           {
             'id': _id,
@@ -62,6 +62,7 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
             'latitude': state.latitude,
             'longitude': state.longitude,
             'createdAt': now.toString(),
+            'iconPath': iconController?.text ?? Assets.icons.icDefault.path,
           },
         );
         final response =
@@ -70,11 +71,24 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
           isSaving: false,
         ));
         if (response) {
+          final icon = await _createMarkerImageFromAsset(_location.iconPath!);
+          final markers = Marker(
+            icon: icon,
+            markerId: MarkerId(_location.id!),
+            position: LatLng(_location.latitude!, _location.longitude!),
+            infoWindow: CustomInfoWindows(
+              locationModel: _location,
+              onTap: () {
+                print('Marker tapped');
+              },
+            ),
+          );
           emit(state.copyWith(
             isSaving: true,
             locations: state.locations == null
                 ? [_location]
                 : [...state.locations!, _location],
+            markers: [...state.markers!, markers],
           ));
         }
       }
@@ -119,10 +133,13 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
       if (response) {
         if (locationId != null) {
           state.locations!.removeWhere((element) => element.id == locationId);
+          state.markers!
+              .removeWhere((element) => element.markerId.value == locationId);
         }
         emit(state.copyWith(
           isDeleting: true,
           locations: state.locations,
+          markers: state.markers,
         ));
       }
     } catch (e) {
@@ -174,7 +191,7 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
     List<Marker> markers = [];
     final currentIcon =
         await _createMarkerImageFromAsset(Assets.icons.icCurrent.path);
-    final icon = await _createMarkerImageFromAsset(Assets.icons.icFavorite.path);
+
     markers.add(Marker(
       icon: currentIcon,
       markerId: MarkerId('current_location'),
@@ -185,24 +202,18 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState> {
     ));
     if (response != null) {
       for (var position in response) {
-        if (position.picture != null) {
-          markers.add(Marker(
-            icon: icon,
-            markerId: MarkerId(position.id!),
-            position: LatLng(position.latitude!, position.longitude!),
-            infoWindow: InfoWindow(
-              title: position.title,
-            ),
-          ));
-        } else {
-          markers.add(Marker(
-            markerId: MarkerId(position.id!),
-            position: LatLng(position.latitude!, position.longitude!),
-            infoWindow: InfoWindow(
-              title: position.title,
-            ),
-          ));
-        }
+        final icon = await _createMarkerImageFromAsset(position.iconPath!);
+        markers.add(Marker(
+          icon: icon,
+          markerId: MarkerId(position.id!),
+          position: LatLng(position.latitude!, position.longitude!),
+          infoWindow: CustomInfoWindows(
+            locationModel: position,
+            onTap: () {
+              print('Marker tapped');
+            },
+          ),
+        ));
       }
     }
 

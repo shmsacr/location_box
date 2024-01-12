@@ -16,9 +16,14 @@ abstract class _$AppRouter extends RootStackRouter {
   @override
   final Map<String, PageFactory> pagesMap = {
     GoogleMapsRoute.name: (routeData) {
+      final args = routeData.argsAs<GoogleMapsRouteArgs>(
+          orElse: () => const GoogleMapsRouteArgs());
       return AutoRoutePage<dynamic>(
         routeData: routeData,
-        child: const GoogleMapsView(),
+        child: GoogleMapsView(
+          key: args.key,
+          locationModel: args.locationModel,
+        ),
       );
     },
     HomeRoute.name: (routeData) {
@@ -32,16 +37,40 @@ abstract class _$AppRouter extends RootStackRouter {
 
 /// generated route for
 /// [GoogleMapsView]
-class GoogleMapsRoute extends PageRouteInfo<void> {
-  const GoogleMapsRoute({List<PageRouteInfo>? children})
-      : super(
+class GoogleMapsRoute extends PageRouteInfo<GoogleMapsRouteArgs> {
+  GoogleMapsRoute({
+    Key? key,
+    LocationModel? locationModel,
+    List<PageRouteInfo>? children,
+  }) : super(
           GoogleMapsRoute.name,
+          args: GoogleMapsRouteArgs(
+            key: key,
+            locationModel: locationModel,
+          ),
           initialChildren: children,
         );
 
   static const String name = 'GoogleMapsRoute';
 
-  static const PageInfo<void> page = PageInfo<void>(name);
+  static const PageInfo<GoogleMapsRouteArgs> page =
+      PageInfo<GoogleMapsRouteArgs>(name);
+}
+
+class GoogleMapsRouteArgs {
+  const GoogleMapsRouteArgs({
+    this.key,
+    this.locationModel,
+  });
+
+  final Key? key;
+
+  final LocationModel? locationModel;
+
+  @override
+  String toString() {
+    return 'GoogleMapsRouteArgs{key: $key, locationModel: $locationModel}';
+  }
 }
 
 /// generated route for
