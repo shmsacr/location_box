@@ -32,59 +32,6 @@ mixin GoogleMapsViewMixin on State<GoogleMapsView> {
     await context.read<GoogleMapsViewModel>().getCurrentLocation();
   }
 
-  Future<void> pickPhoto() async {
-    if (await _requestGalleryPermission()) {
-      XFile? getFile =
-          await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (getFile != null) {
-        setState(() {
-          imageFile = File(getFile.path);
-        });
-      }
-    }
-    return null;
-  }
-
-  Future<void> takePhoto() async {
-    if (await _requestCameraPermission()) {
-      XFile? getFile =
-          await ImagePicker().pickImage(source: ImageSource.camera);
-      if (getFile != null) {
-        String dir = path.dirname(getFile.path);
-        final String pathName = DateFormat("Hms-m-ms-s").format(DateTime.now());
-        String newPath = path.join(dir, "location_box_${pathName}.jpg");
-        await getFile.saveTo(newPath);
-
-        setState(() {
-          imageFile = File(getFile.path);
-        });
-      }
-    }
-    return null;
-  }
-
-  Future<bool> _requestGalleryPermission() async {
-    var status = await Permission.storage.status;
-    print(status);
-    if (status.isGranted) {
-      return true;
-    } else {
-      var result = await Permission.storage.request();
-      return result.isGranted;
-    }
-  }
-
-  Future<bool> _requestCameraPermission() async {
-    var status = await Permission.camera.status;
-    print(status);
-    if (status.isGranted) {
-      return true;
-    } else {
-      var result = await Permission.camera.request();
-      return result.isGranted;
-    }
-  }
-
   Set<Marker> createMarker({required LatLng position}) {
     return {
       Marker(
