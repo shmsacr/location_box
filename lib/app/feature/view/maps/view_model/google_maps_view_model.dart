@@ -16,7 +16,7 @@ import 'package:location_box/gen/src/asset/assets.gen.dart';
 import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
-final class GoogleMapsViewModel extends Cubit<GoogleMapsState>  {
+ class GoogleMapsViewModel extends Cubit<GoogleMapsState>  {
   GoogleMapsViewModel() : super(GoogleMapsState());
   final TextEditingController _addressController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -206,6 +206,9 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState>  {
         markers.add(Marker(
           icon: icon,
           markerId: MarkerId(position.id!),
+          onTap: () {
+            print('Marker tapped');
+          },
           position: LatLng(position.latitude!, position.longitude!),
           infoWindow: CustomInfoWindows(
             locationModel: position,
