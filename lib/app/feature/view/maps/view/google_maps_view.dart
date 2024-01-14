@@ -2,16 +2,13 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kartal/kartal.dart';
-import 'package:location_box/app/feature/view/maps/enum/form_builder_name_enum.dart';
 import 'package:location_box/app/feature/view/maps/mixin/google_maps_view_mixin.dart';
 import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_model.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
-import 'package:location_box/app/feature/view/maps/widget/dropdown_widget.dart';
-import 'package:location_box/app/feature/view/maps/widget/mixin/custom_info_windows_mixin.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
+import 'package:location_box/app/product/widget/custom_bottom_sheet.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../../../../gen/src/asset/assets.gen.dart';
@@ -43,14 +40,14 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                 }),
             actions: [
               IconButton(
-                icon: Icon(Icons.save),
-                onPressed: () {
-                  newMethod(_context, context, state).then((value) => setState(() {
-                        imageFile = null;
-                      }));
-                  ;
-                },
-              ),
+                  icon: Icon(Icons.save),
+                  onPressed: () async {
+                    await customBottomSheet(
+                      context: context,
+                      state: state,
+                      locationModel: null,
+                    );
+                  }),
               IconButton(
                   onPressed: () {
                     googleMapsViewModel.mapController?.animateCamera(
@@ -107,7 +104,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
     );
   }
 
-  Future<void> newMethod(BuildContext _context, BuildContext context, GoogleMapsState state) {
+/*   Future<void> newMethod(BuildContext _context, BuildContext context, GoogleMapsState state) {
     return showModalBottomSheet<void>(
                     isScrollControlled: true,
                     context: _context,
@@ -231,7 +228,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                       );
                     });
   }
-
+ */
   Future<void> buildShowModalBottomSheet(BuildContext context) async {
     return await showModalBottomSheet<void>(
       context: context,
