@@ -17,10 +17,9 @@ import 'package:permission_handler/permission_handler.dart';
 
 import '../../feature/view/maps/view_model/state/google_maps_state.dart';
 
-File? _newPicture;
+ValueNotifier<File?> _newPicture = ValueNotifier(null);
 Future<void> customBottomSheet(
     {required BuildContext context,
-    required LocationModel? locationModel,
     required GoogleMapsState? state}) async {
   final MyViewModel getIt = GetIt.instance.get<MyViewModel>();
   return showModalBottomSheet<void>(
@@ -35,47 +34,52 @@ Future<void> customBottomSheet(
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Ink(
-                    child: InkWell(
-                      onTap: () => buildShowModalBottomSheet(context),
-                      child: locationModel?.picture != null
-                          ? Image.file(
-                              File(locationModel!.picture!),
-                              width: 100,
-                              height: 100,
-                            )
-                          : _newPicture == null ?Stack(
-                              children: [
-                                Icon(
-                                  Icons.image,
-                                  size: 100,
-                                ),
-                                Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 30,
-                                    weight: 100,
-                                    color:
-                                        const Color.fromARGB(255, 2, 240, 18),
-                                  ),
-                                ),
-                              ],
-                            ) : Image.file(
-                              _newPicture!,
-                              width: 100,
-                              height: 100,
-                            )
-                    ),
-                  ),
+                  ValueListenableBuilder(
+                      valueListenable: _newPicture,
+                      builder: (context, File? value, child) {
+                        return Ink(
+                          child: InkWell(
+                              onTap: () => buildShowModalBottomSheet(context),
+                              child: state?.location?.picture != null
+                                  ? Image.file(
+                                      File(state!.location!.picture!),
+                                      width: 100,
+                                      height: 100,
+                                    )
+                                  : value == null
+                                      ? Stack(
+                                          children: [
+                                            Icon(
+                                              Icons.image,
+                                              size: 100,
+                                            ),
+                                            Positioned(
+                                              bottom: 0,
+                                              right: 0,
+                                              child: Icon(
+                                                Icons.add,
+                                                size: 30,
+                                                weight: 100,
+                                                color: const Color.fromARGB(
+                                                    255, 2, 240, 18),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Image.file(
+                                          value!,
+                                          width: 100,
+                                          height: 100,
+                                        )),
+                        );
+                      }),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                          'latitude: ${state?.latitude ?? locationModel!.latitude}'),
+                          'latitude: ${state?.latitude}'),
                       Text(
-                          'longitude: ${state?.longitude ?? locationModel!.longitude}'),
+                          'longitude: ${state?.longitude}'),
                     ],
                   ),
                 ],
@@ -127,7 +131,7 @@ Future<void> customBottomSheet(
                     onPressed: () {
                       context
                           .read<GoogleMapsViewModel>()
-                          .saveLocation(_newPicture);
+                          .saveLocation(_newPicture.value);
                       if (state!.isSaving) {
                         print('state : ${state.locations}');
                       }
@@ -141,7 +145,7 @@ Future<void> customBottomSheet(
         ),
       );
     },
-  );
+  ).then((value) => _newPicture.value = null);
 }
 
 Future<void> buildShowModalBottomSheet(BuildContext context) async {
@@ -236,12 +240,11 @@ class _CustomTextField extends StatelessWidget {
   }
 }
 
-Future<File?> pickPhoto() async {
+Future<ValueNotifier<File?>?> pickPhoto() async {
   if (await _requestGalleryPermission()) {
     XFile? getFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (getFile != null) {
-      
-      _newPicture = File(getFile.path);
+      _newPicture.value = File(getFile.path);
 
       return _newPicture;
     }
@@ -249,7 +252,7 @@ Future<File?> pickPhoto() async {
   return null;
 }
 
-Future<File?> takePhoto() async {
+Future<ValueNotifier<File?>?> takePhoto() async {
   if (await _requestCameraPermission()) {
     XFile? getFile = await ImagePicker().pickImage(source: ImageSource.camera);
     if (getFile != null) {
@@ -257,7 +260,7 @@ Future<File?> takePhoto() async {
       final String pathName = DateFormat("Hms-m-ms-s").format(DateTime.now());
       String newPath = path.join(dir, "location_box_${pathName}.jpg");
       await getFile.saveTo(newPath);
-      _newPicture = File(newPath);
+      _newPicture.value = File(newPath);
 
       return _newPicture;
     }
