@@ -110,7 +110,7 @@ class CustomCardWidget extends StatelessWidget {
               IconButton(onPressed: () {
               context.router.push(GoogleMapsRoute( locationModel: state.locations![index]));
               }, icon: Icon(Icons.location_on)),
-              IconButton(onPressed: () => customBottomSheet(context: context, locationModel: null, state: state), icon: Icon(Icons.edit)),
+              IconButton(onPressed: () => customBottomSheet(context: context, state: state), icon: Icon(Icons.edit)),
               IconButton(
                   onPressed: () {
                     Share.share("https://www.google.com/maps/search/?api=1&query=${state.locations![index].latitude},${state.locations![index].longitude}");
