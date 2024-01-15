@@ -4,46 +4,26 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_box/app/core/service/location_service/location_service_impl.dart';
 import 'package:location_box/app/core/service/location_storage/location_storage_impl.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
 import 'package:location_box/app/feature/view/maps/widget/custom_info_windows.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
+import 'package:location_box/app/product/model/my_view_model.dart';
 import 'package:location_box/gen/src/asset/assets.gen.dart';
-import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
  class GoogleMapsViewModel extends Cubit<GoogleMapsState>  {
   GoogleMapsViewModel() : super(GoogleMapsState());
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _imageController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  GoogleMapController? _mapController;
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController? _iconController = TextEditingController();
-  final _formKey = GlobalKey<FormBuilderState>();
 
-  TextEditingController get addressController => _addressController;
-  TextEditingController get descriptionController => _descriptionController;
-  TextEditingController get imageController => _imageController;
-  TextEditingController get phoneController => _phoneController;
-  TextEditingController get titleController => _titleController;
-  TextEditingController? get iconController => _iconController;
-  GlobalKey<FormBuilderState> get formKey => _formKey;
-  GoogleMapController? get mapController => _mapController;
-
-  GoogleMapController? setMapController(GoogleMapController controller) {
-    _mapController = controller;
-    return _mapController;
-  }
-
+  final MyViewModel getIt = GetIt.instance.get<MyViewModel>();
   final LocationStorageImpl _locationStorage = LocationStorageImpl();
 
   Future<void> saveLocation(File? imagePath) async {
+    final _formKey = getIt.formKey;
     try {
       print('_formKey.currentState: ${_formKey.currentState}');
       if (_formKey.currentState?.saveAndValidate() ?? false) {
@@ -62,7 +42,7 @@ import 'package:uuid/uuid.dart';
             'latitude': state.latitude,
             'longitude': state.longitude,
             'createdAt': now.toString(),
-            'iconPath': iconController?.text ?? Assets.icons.icDefault.path,
+            'iconPath': getIt.iconController?.text ?? Assets.icons.icDefault.path,
           },
         );
         final response =
@@ -164,7 +144,7 @@ import 'package:uuid/uuid.dart';
         latitude: position.latitude,
         longitude: position.longitude,
       );
-      _addressController.text = address;
+      getIt.addressController.text = address;
       emit(state.copyWith(
         currentLocation: LatLng(position.latitude, position.longitude),
         latitude: position.latitude,
