@@ -45,12 +45,11 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                     await customBottomSheet(
                       context: context,
                       state: state,
-                      locationModel: null,
                     );
                   }),
               IconButton(
                   onPressed: () {
-                    googleMapsViewModel.mapController?.animateCamera(
+                    googleMapsViewModel.getIt.mapController?.animateCamera(
                       CameraUpdate.newCameraPosition(
                         CameraPosition(
                           target: state.currentLocation!,
@@ -82,7 +81,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                         zoom: 14.4746,
                       ),
                 onMapCreated: (GoogleMapController controller) {
-                  googleMapsViewModel.setMapController(controller);
+                  googleMapsViewModel.getIt.mapController = controller;
                 },
                 markers: state.markers!.toSet(),
               ),
