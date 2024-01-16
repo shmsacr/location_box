@@ -20,8 +20,16 @@ import '../../feature/view/maps/view_model/state/google_maps_state.dart';
 ValueNotifier<File?> _newPicture = ValueNotifier(null);
 Future<void> customBottomSheet(
     {required BuildContext context,
-    required GoogleMapsState? state}) async {
+    required GoogleMapsState? state,
+    required LocationModel? locationModel,
+    bool isUpdate = false}) async {
   final MyViewModel getIt = GetIt.instance.get<MyViewModel>();
+  if (isUpdate) {
+    getIt.titleController.text = locationModel?.title ?? "";
+    getIt.addressController.text = locationModel?.address ?? "";
+    getIt.descriptionController.text = locationModel?.description ?? "";
+    getIt.iconController?.text = locationModel!.iconPath!;
+  }
   return showModalBottomSheet<void>(
     isScrollControlled: true,
     context: context,
@@ -40,7 +48,7 @@ Future<void> customBottomSheet(
                         return Ink(
                           child: InkWell(
                               onTap: () => buildShowModalBottomSheet(context),
-                              child: state?.location?.picture != null
+                              child: locationModel?.picture != null
                                   ? Image.file(
                                       File(state!.location!.picture!),
                                       width: 100,
@@ -67,7 +75,7 @@ Future<void> customBottomSheet(
                                           ],
                                         )
                                       : Image.file(
-                                          value!,
+                                          value,
                                           width: 100,
                                           height: 100,
                                         )),
@@ -76,10 +84,8 @@ Future<void> customBottomSheet(
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                          'latitude: ${state?.latitude}'),
-                      Text(
-                          'longitude: ${state?.longitude}'),
+                      Text('latitude: ${state?.latitude}'),
+                      Text('longitude: ${state?.longitude}'),
                     ],
                   ),
                 ],
@@ -116,7 +122,9 @@ Future<void> customBottomSheet(
                     SizedBox(
                       height: 16,
                     ),
-                    CustomDropDownWidget(iconController: getIt.iconController),
+                    CustomDropDownWidget(
+                        iconController: getIt.iconController,
+                        iconPath: isUpdate ? locationModel!.iconPath : null),
                   ],
                 ),
               ),
@@ -129,14 +137,16 @@ Future<void> customBottomSheet(
                   ),
                   TextButton(
                     onPressed: () {
-                      context
-                          .read<GoogleMapsViewModel>()
-                          .saveLocation(_newPicture.value);
-                      if (state!.isSaving) {
-                        print('state : ${state.locations}');
+                      if (isUpdate) {
+                        context.read<GoogleMapsViewModel>().updateLocation(
+                            _newPicture.value, locationModel!.id!);
+                      } else {
+                        context
+                            .read<GoogleMapsViewModel>()
+                            .saveLocation(_newPicture.value);
                       }
                     },
-                    child: Text('Save'),
+                    child: Text(isUpdate ? 'Update' : 'Save'),
                   ),
                 ],
               )
@@ -145,7 +155,13 @@ Future<void> customBottomSheet(
         ),
       );
     },
-  ).then((value) => _newPicture.value = null);
+  ).then((value) {
+    getIt.titleController.text = "";
+    getIt.addressController.text =  "";
+    getIt.descriptionController.text =  "";
+    getIt.iconController?.text ="";
+    _newPicture.value = null;
+  });
 }
 
 Future<void> buildShowModalBottomSheet(BuildContext context) async {
