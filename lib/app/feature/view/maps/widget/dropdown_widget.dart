@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:location_box/app/feature/view/maps/enum/markes_icon_enum.dart';
+import 'package:location_box/app/feature/view/maps/widget/mixin/dropdown_mixin.dart';
 
 class CustomDropDownWidget extends StatefulWidget {
-  const CustomDropDownWidget({super.key, required this.iconController});
+  const CustomDropDownWidget({super.key, required this.iconController, required this.iconPath});
   final TextEditingController? iconController;
+  final String? iconPath;
 
   @override
   State<CustomDropDownWidget> createState() => _CustomDropDownWidgetState();
 }
 
-class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
-  final ValueNotifier<MarkerIcons> _selectedIcon = ValueNotifier<MarkerIcons>(
-      MarkerIcons.ic_default); // default value for dropdown button
-  MarkerIcons? selectedIcon;
+class _CustomDropDownWidgetState extends State<CustomDropDownWidget> with CustomDropDownWidgetMixin {
+  
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: _selectedIcon,
+        valueListenable: selectedIcon,
         builder: (BuildContext context, MarkerIcons value, Widget? child) {
           return DropdownButton<MarkerIcons>(
             value: value,
             onChanged: (MarkerIcons? newValue) {
-              _selectedIcon.value = newValue!;
+              selectedIcon.value = newValue!;
               widget.iconController?.text = newValue.value;
             },
             items: MarkerIcons.values
@@ -39,33 +39,5 @@ class _CustomDropDownWidgetState extends State<CustomDropDownWidget> {
             }).toList(),
           );
         });
-    /* return DropdownMenu<MarkerIcons>(
-        label: Text(selectedIcon?.key ?? 'Select Icon'),
-        leadingIcon: selectedIcon?.value == null
-            ? Image.asset(MarkerIcons.ic_default.value, width: 30, height: 30)
-            : Image.asset(widget.iconController!.text, width: 30, height: 30),
-        inputDecorationTheme: const InputDecorationTheme(
-          filled: true,
-          contentPadding: EdgeInsets.symmetric(vertical: 5.0),
-        ),
-        onSelected: (MarkerIcons? icon) {
-          if (icon != null) {
-            setState(() {
-              selectedIcon = icon;
-              widget.iconController?.text = icon.value;
-            });
-          }
-        },
-        dropdownMenuEntries:
-            MarkerIcons.values.map<DropdownMenuEntry<MarkerIcons>>(
-          (MarkerIcons icon) {
-            return DropdownMenuEntry<MarkerIcons>(
-              value: icon,
-              label: icon.key,
-              leadingIcon: Image.asset(icon.value, width: 30, height: 30),
-            );
-          },
-        ).toList());
-  } */
   }
 }
