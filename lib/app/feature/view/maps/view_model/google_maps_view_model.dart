@@ -166,6 +166,41 @@ import 'package:uuid/uuid.dart';
       currentLocation: null,
     ));
   }
+  Future<void> updateLocation(File? imagePath,String locationId)async {
+    final _formKey = getIt.formKey;
+    try {
+      if (_formKey.currentState?.saveAndValidate() ?? false){
+        final LocationModel _location = LocationModel.fromJson(
+          {
+            'id': locationId,
+            'title': _formKey.currentState!.value['title'],
+            'address': _formKey.currentState!.value['address'],
+            'description': _formKey.currentState!.value['description'],
+            'picture': imagePath?.path,
+            'phone': _formKey.currentState!.value['phone'],
+            'latitude': state.latitude,
+            'longitude': state.longitude,
+            'iconPath': getIt.iconController?.text ?? Assets.icons.icDefault.path,
+          },
+        );
+        final response = await _locationStorage.updateLocation(location: _location);
+        if(response.id == locationId){
+          final updatedLocations = List<LocationModel>.from(state.locations!);
+          final index =
+              updatedLocations.indexWhere((loc) => loc.id == locationId);
+          if (index != -1) {
+            updatedLocations[index] = _location;
+
+            emit(state.copyWith(
+              locations: updatedLocations,
+            ));
+          }
+        }
+      }
+    } catch (e) {
+      
+    }
+  }
 
   Future<List<Marker>> multipleMarker(List<LocationModel>? response) async {
     List<Marker> markers = [];
