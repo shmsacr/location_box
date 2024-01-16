@@ -45,6 +45,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                     await customBottomSheet(
                       context: context,
                       state: state,
+                      locationModel: null
                     );
                   }),
               IconButton(
