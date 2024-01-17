@@ -41,11 +41,11 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
             actions: [
               IconButton(
                   icon: Icon(Icons.save),
-                  onPressed: () async {
-                    await customBottomSheet(
+                  onPressed: ()  {
+                    CustomBottomSheetHelper(
                       context: context,
+                      locationModel: null,
                       state: state,
-                      locationModel: null
                     );
                   }),
               IconButton(
