@@ -83,7 +83,7 @@ import 'package:uuid/uuid.dart';
   }
 
   Future<void> getLocations() async {
-    getCurrentLocation();
+    await getCurrentLocation();
     emit(state.copyWith(
       isLoading: true,
     ));
