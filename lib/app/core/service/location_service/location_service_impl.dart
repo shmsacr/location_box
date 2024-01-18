@@ -22,8 +22,14 @@ class LocationServiceImpl extends LocationService {
   @override
   Future<Position> getCurrentPosition() async {
     try {
+      if (!await Geolocator.isLocationServiceEnabled()) {
+        throw Exception("Konum servisi kapalı");
+      } else if (await Geolocator.checkPermission() ==
+          LocationPermission.denied) {
+        throw Exception("Konum izni verilmemiş");
+      }
       Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.low,
+        desiredAccuracy: LocationAccuracy.high,
       );
       return position;
     } catch (e) {

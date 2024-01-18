@@ -4,46 +4,26 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_box/app/core/service/location_service/location_service_impl.dart';
 import 'package:location_box/app/core/service/location_storage/location_storage_impl.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
 import 'package:location_box/app/feature/view/maps/widget/custom_info_windows.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
+import 'package:location_box/app/product/model/my_view_model.dart';
 import 'package:location_box/gen/src/asset/assets.gen.dart';
-import 'package:path/path.dart';
 import 'package:uuid/uuid.dart';
 
-final class GoogleMapsViewModel extends Cubit<GoogleMapsState>  {
+ class GoogleMapsViewModel extends Cubit<GoogleMapsState>  {
   GoogleMapsViewModel() : super(GoogleMapsState());
-  final TextEditingController _addressController = TextEditingController();
-  final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _imageController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  GoogleMapController? _mapController;
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController? _iconController = TextEditingController();
-  final _formKey = GlobalKey<FormBuilderState>();
 
-  TextEditingController get addressController => _addressController;
-  TextEditingController get descriptionController => _descriptionController;
-  TextEditingController get imageController => _imageController;
-  TextEditingController get phoneController => _phoneController;
-  TextEditingController get titleController => _titleController;
-  TextEditingController? get iconController => _iconController;
-  GlobalKey<FormBuilderState> get formKey => _formKey;
-  GoogleMapController? get mapController => _mapController;
-
-  GoogleMapController? setMapController(GoogleMapController controller) {
-    _mapController = controller;
-    return _mapController;
-  }
-
+  final MyViewModel getIt = GetIt.instance.get<MyViewModel>();
   final LocationStorageImpl _locationStorage = LocationStorageImpl();
 
   Future<void> saveLocation(File? imagePath) async {
+    final _formKey = getIt.formKey;
     try {
       print('_formKey.currentState: ${_formKey.currentState}');
       if (_formKey.currentState?.saveAndValidate() ?? false) {
@@ -62,7 +42,7 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState>  {
             'latitude': state.latitude,
             'longitude': state.longitude,
             'createdAt': now.toString(),
-            'iconPath': iconController?.text ?? Assets.icons.icDefault.path,
+            'iconPath': getIt.iconController?.text ?? Assets.icons.icDefault.path,
           },
         );
         final response =
@@ -103,7 +83,7 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState>  {
   }
 
   Future<void> getLocations() async {
-    getCurrentLocation();
+    await getCurrentLocation();
     emit(state.copyWith(
       isLoading: true,
     ));
@@ -164,7 +144,7 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState>  {
         latitude: position.latitude,
         longitude: position.longitude,
       );
-      _addressController.text = address;
+      getIt.addressController.text = address;
       emit(state.copyWith(
         currentLocation: LatLng(position.latitude, position.longitude),
         latitude: position.latitude,
@@ -186,6 +166,41 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState>  {
       currentLocation: null,
     ));
   }
+  Future<void> updateLocation(File? imagePath,String locationId)async {
+    final _formKey = getIt.formKey;
+    try {
+      if (_formKey.currentState?.saveAndValidate() ?? false){
+        final LocationModel _location = LocationModel.fromJson(
+          {
+            'id': locationId,
+            'title': _formKey.currentState!.value['title'],
+            'address': _formKey.currentState!.value['address'],
+            'description': _formKey.currentState!.value['description'],
+            'picture': imagePath?.path,
+            'phone': _formKey.currentState!.value['phone'],
+            'latitude': state.latitude,
+            'longitude': state.longitude,
+            'iconPath': getIt.iconController?.text ?? Assets.icons.icDefault.path,
+          },
+        );
+        final response = await _locationStorage.updateLocation(location: _location);
+        if(response.id == locationId){
+          final updatedLocations = List<LocationModel>.from(state.locations!);
+          final index =
+              updatedLocations.indexWhere((loc) => loc.id == locationId);
+          if (index != -1) {
+            updatedLocations[index] = _location;
+
+            emit(state.copyWith(
+              locations: updatedLocations,
+            ));
+          }
+        }
+      }
+    } catch (e) {
+      
+    }
+  }
 
   Future<List<Marker>> multipleMarker(List<LocationModel>? response) async {
     List<Marker> markers = [];
@@ -206,6 +221,9 @@ final class GoogleMapsViewModel extends Cubit<GoogleMapsState>  {
         markers.add(Marker(
           icon: icon,
           markerId: MarkerId(position.id!),
+          onTap: () {
+            print('Marker tapped');
+          },
           position: LatLng(position.latitude!, position.longitude!),
           infoWindow: CustomInfoWindows(
             locationModel: position,
