@@ -18,6 +18,7 @@ final class CustomDarkTheme implements CustomTheme {
   @override
   // TODO: implement inputDecorationTheme
   InputDecorationTheme get inputDecorationTheme => InputDecorationTheme(
+    
         border: OutlineInputBorder(),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -59,4 +60,5 @@ final class CustomDarkTheme implements CustomTheme {
           color: Colors.red,
         ),
       );
+  
 }
