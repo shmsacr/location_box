@@ -26,7 +26,8 @@ class CustomBottomSheetHelper{
     required this.state,
     required this.locationModel,
     this.isUpdate = false,
-  });
+  }){
+    customBottomSheet();}
   final BuildContext context;
   final GoogleMapsState? state;
   final LocationModel? locationModel;
@@ -44,6 +45,7 @@ class CustomBottomSheetHelper{
     }
 
     return showModalBottomSheet<void>(
+      
       isScrollControlled: true,
       context: context,
       builder: (_) {
