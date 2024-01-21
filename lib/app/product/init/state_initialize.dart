@@ -11,7 +11,7 @@ final class StateInitialize extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<AppThemeViewModel>.value(
-          value: AppThemeViewModel(),
+          value: AppThemeViewModel()..getThemeMode(),
         ),
         BlocProvider<GoogleMapsViewModel>.value(
           value: GoogleMapsViewModel()..getLocations(),
