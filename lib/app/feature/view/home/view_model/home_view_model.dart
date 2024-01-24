@@ -6,11 +6,45 @@ class HomeViewModel extends Cubit<HomeState> {
   HomeViewModel() : super(HomeState());
   final LocationStorageImpl _locationStorage = LocationStorageImpl();
 
-  String _searchText = '';
   void searchLocation(String query) {
-    _searchText = query;
-
     emit(state.copyWith(isSearching: true));
+    if (state.lastSearchLenght < query.length) {
+      emit(
+        state.copyWith(
+          isSearching: state.isSearching,
+          isLoading: state.isLoading,
+          locations: (state.searchMaps ?? [])
+              .where(
+                (element) => element.title!.toLowerCase().contains(
+                      query.toLowerCase(),
+                    ),
+              )
+              .toList(),
+        ),
+      );
+    } else if (query.isNotEmpty && query.length > 0) {
+      emit(
+        state.copyWith(
+          lastSearchLenght: query.length,
+          isSearching: state.isSearching,
+          isLoading: state.isLoading,
+          locations: (state.locations ?? [])
+              .where(
+                (element) => element.title!.toLowerCase().contains(
+                      query.toLowerCase(),
+                    ),
+              )
+              .toList(),
+        ),
+      );
+    } else {
+      emit(state.copyWith(
+          lastSearchLenght: query.length,
+          locations: state.searchMaps,
+          isSearching: state.isSearching,
+          isLoading: state.isLoading));
+    }
+    
   }
 
   void clearSearch() {
@@ -24,9 +58,10 @@ class HomeViewModel extends Cubit<HomeState> {
     try {
       final response = await _locationStorage.getAllLocations();
       emit(state.copyWith(
-          locations: response.isNotEmpty ? response : null,
-          isLoading: false,
-          ));
+        locations: response.isNotEmpty ? response : null,
+        isLoading: false,
+        searchMaps: response.isNotEmpty ? response : null,
+      ));
     } catch (e) {
       emit(state.copyWith(
         isLoading: false,
