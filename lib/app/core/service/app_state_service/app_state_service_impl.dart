@@ -9,7 +9,7 @@ class AppStateServiceImplement extends AppStateService {
     Box<AppState> box = await Hive.openBox<AppState>(_boxName);
     AppState? appState = box.get(1);
     await box.close();
-    return appState!.themeMode;
+    return appState != null ? appState.themeMode : false;
   }
 
   @override
