@@ -7,6 +7,8 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:get_it/get_it.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:location_box/app/feature/view/home/view_model/home_view_model.dart';
+import 'package:location_box/app/feature/view/home/view_model/state/home_state.dart';
 import 'package:location_box/app/feature/view/maps/enum/form_builder_name_enum.dart';
 import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_model.dart';
 import 'package:location_box/app/feature/view/maps/widget/dropdown_widget.dart';
@@ -29,7 +31,7 @@ class CustomBottomSheetHelper{
   }){
     customBottomSheet();}
   final BuildContext context;
-  final GoogleMapsState? state;
+  final HomeState? state;
   final LocationModel? locationModel;
   final bool isUpdate;
   ValueNotifier<File?> _newPicture = ValueNotifier(null);
@@ -156,11 +158,11 @@ class CustomBottomSheetHelper{
                     TextButton(
                       onPressed: () {
                         if (isUpdate) {
-                          context.read<GoogleMapsViewModel>().updateLocation(
+                          context.read<HomeViewModel>().updateLocation(
                               _newPicture.value, locationModel!.id!);
                         } else {
                           context
-                              .read<GoogleMapsViewModel>()
+                              .read<HomeViewModel>()
                               .saveLocation(_newPicture.value);
                         }
                       },
