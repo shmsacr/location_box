@@ -14,11 +14,8 @@ final class StateInitialize extends StatelessWidget {
         BlocProvider<AppThemeViewModel>.value(
           value: AppThemeViewModel()..getThemeMode(),
         ),
-        BlocProvider<GoogleMapsViewModel>.value(
-          value: GoogleMapsViewModel()..getLocations(),
-        ),
         BlocProvider<HomeViewModel>.value(
-            value: HomeViewModel()..getLocations()),
+            value: HomeViewModel()..getCurrentLocation()..getLocations()),
       ],
       child: child,
     );
