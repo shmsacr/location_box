@@ -26,10 +26,7 @@ class _HomeViewState extends State<HomeView> with HomeViewMixin {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeViewModel, HomeState>(
       builder: (context, state) {
-        if (state.isLoading) {
-          return Center(child: CircularProgressIndicator());
-        } else if (state.locations != null && state.locations!.isNotEmpty) {
-          return Scaffold(
+        return Scaffold(
             drawer: Drawer(
               child: ListView(
                 padding: EdgeInsets.zero,
@@ -109,22 +106,31 @@ class _HomeViewState extends State<HomeView> with HomeViewMixin {
                           },
                           icon: Icon(Icons.search)),
                 ]),
-            body: Container(
-                decoration: CustomBoxDecoration.getBoxDecoration(context),
-                child: ListView.builder(
-                    itemCount: state.locations!.length,
-                    itemBuilder: (context, index) {
-                      return CustomCardWidget(state: state, index: index);
-                    })),
-          );
-        } else {
-          return Center(
-              child: TextButton(
-                  child: Text('Add Location'),
-                  onPressed: () {
-                    context.router.push(GoogleMapsRoute());
-                  }));
-        }
+            body: state.isLoading
+                ? Center(child: CircularProgressIndicator())
+                : Container(
+                    decoration: CustomBoxDecoration.getBoxDecoration(context),
+                    child:
+                        (state.locations != null && state.locations!.isNotEmpty)
+                            ? ListView.builder(
+                                itemCount: state.locations?.length,
+                                itemBuilder: (context, index) {
+                                  return CustomCardWidget(
+                                      state: state, index: index);
+                                },
+                              )
+                            : (state.isSearching)
+                                ? Center(
+                                    child: Text('No found Location'),
+                                  )
+                                : Center(
+                                    child: TextButton(
+                                      child: Text('Add Location'),
+                                      onPressed: () {
+                                        context.router.push(GoogleMapsRoute());
+                                      },
+                                    ),
+                                  )));
       },
     );
   }
