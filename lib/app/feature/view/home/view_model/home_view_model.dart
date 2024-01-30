@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -21,7 +20,6 @@ class HomeViewModel extends Cubit<HomeState> {
   HomeViewModel() : super(HomeState());
   final LocationStorageImpl _locationStorage = LocationStorageImpl();
   final MyViewModel getIt = GetIt.instance.get<MyViewModel>();
-
 
   void searchLocation(String query) {
     emit(state.copyWith(isSearching: true));
@@ -61,14 +59,11 @@ class HomeViewModel extends Cubit<HomeState> {
           isSearching: state.isSearching,
           isLoading: state.isLoading));
     }
-    
   }
 
   void clearSearch() {
     emit(state.copyWith(isSearching: false));
   }
-
- 
 
   Future<void> saveLocation(File? imagePath) async {
     final _formKey = getIt.formKey;
@@ -117,6 +112,9 @@ class HomeViewModel extends Cubit<HomeState> {
             locations: state.locations == null
                 ? [_location]
                 : [...state.locations!, _location],
+            searchMaps: state.searchMaps == null
+                ? [_location]
+                : [...state.searchMaps!, _location],
             markers: [...state.markers!, markers],
           ));
         }
@@ -140,7 +138,7 @@ class HomeViewModel extends Cubit<HomeState> {
       emit(state.copyWith(
           locations: response.isNotEmpty ? response : null,
           isLoading: false,
-          ));
+          searchMaps: response.isNotEmpty ? response : null));
     } catch (e) {
       emit(state.copyWith(
         isLoading: false,
@@ -165,7 +163,7 @@ class HomeViewModel extends Cubit<HomeState> {
         }
         emit(state.copyWith(
           isDeleting: true,
-          locations: state.locations,
+          locations: state.locations!.length > 0 ? state.locations : null,
           markers: state.markers,
         ));
       }
