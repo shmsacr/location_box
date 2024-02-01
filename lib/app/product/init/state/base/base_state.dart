@@ -7,6 +7,4 @@ abstract class BaseState<T extends StatefulWidget> extends State<T> {
   AppThemeViewModel get appThemeViewModel =>
       ProductStateGetIt.appThemeViewModel;
 
-  GoogleMapsViewModel get productViewModel =>
-      ProductStateGetIt.googleMapsViewModel;
 }

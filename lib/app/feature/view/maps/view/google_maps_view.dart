@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kartal/kartal.dart';
+import 'package:location_box/app/feature/view/home/view_model/home_view_model.dart';
+import 'package:location_box/app/feature/view/home/view_model/state/home_state.dart';
 import 'package:location_box/app/feature/view/maps/mixin/google_maps_view_mixin.dart';
 import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_model.dart';
 import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
@@ -25,7 +27,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
     with GoogleMapsViewMixin {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<GoogleMapsViewModel, GoogleMapsState>(
+    return BlocBuilder<HomeViewModel, HomeState>(
       builder: (_context, state) {
         return Scaffold(
           resizeToAvoidBottomInset: false,
@@ -35,7 +37,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
             leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
-                  _context.read<GoogleMapsViewModel>().deleteCurrentLocation();
+                  _context.read<HomeViewModel>().deleteCurrentLocation();
                   context.router.pop();
                 }),
             actions: [

@@ -7,8 +7,6 @@ import 'package:location_box/app/feature/view/home/mixin/home_view_mixin.dart';
 import 'package:location_box/app/feature/view/home/view_model/home_view_model.dart';
 import 'package:location_box/app/feature/view/home/view_model/state/home_state.dart';
 import 'package:location_box/app/feature/view/home/widget/customBoxDecoration.dart';
-import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_model.dart';
-import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
 import 'package:location_box/app/product/extension/context_extension.dart';
 import 'package:location_box/app/product/init/state/theme/view_model.dart';
 import 'package:location_box/app/product/navigation/app_router.dart';
@@ -28,10 +26,7 @@ class _HomeViewState extends State<HomeView> with HomeViewMixin {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeViewModel, HomeState>(
       builder: (context, state) {
-        if (state.isLoading) {
-          return Center(child: CircularProgressIndicator());
-        } else if (state.locations != null && state.locations!.isNotEmpty){
-return Scaffold(
+        return Scaffold(
             drawer: Drawer(
               child: ListView(
                 padding: EdgeInsets.zero,
@@ -111,24 +106,31 @@ return Scaffold(
                           },
                           icon: Icon(Icons.search)),
                 ]),
-            body: Container(
-              decoration: CustomBoxDecoration.getBoxDecoration(context),
-              child: ListView.builder(
-                    itemCount: state.locations!.length,
-                    itemBuilder: (context, index) {
-                      return CustomCardWidget(state: state, index: index);
-                    })
-            ),
-          );
-        } else {
-          return Center(
-              child: TextButton(
-                  child: Text('Add Location'),
-                  onPressed: () {
-                    context.router.push(GoogleMapsRoute());
-                  }));
-        }
-        
+            body: state.isLoading
+                ? Center(child: CircularProgressIndicator())
+                : Container(
+                    decoration: CustomBoxDecoration.getBoxDecoration(context),
+                    child:
+                        (state.locations != null && state.locations!.isNotEmpty)
+                            ? ListView.builder(
+                                itemCount: state.locations?.length,
+                                itemBuilder: (context, index) {
+                                  return CustomCardWidget(
+                                      state: state, index: index);
+                                },
+                              )
+                            : (state.isSearching)
+                                ? Center(
+                                    child: Text('No found Location'),
+                                  )
+                                : Center(
+                                    child: TextButton(
+                                      child: Text('Add Location'),
+                                      onPressed: () {
+                                        context.router.push(GoogleMapsRoute());
+                                      },
+                                    ),
+                                  )));
       },
     );
   }
@@ -196,7 +198,7 @@ class CustomCardWidget extends StatelessWidget {
               IconButton(
                   onPressed: () {
                     context
-                        .read<GoogleMapsViewModel>()
+                        .read<HomeViewModel>()
                         .deleteLocation(state.locations![index].id!);
                   },
                   icon: Icon(Icons.delete)),

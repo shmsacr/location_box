@@ -10,15 +10,12 @@ final class ProductStateGetIt {
   static void setup() {
     _getIt
       ..registerLazySingleton<AppThemeViewModel>(AppThemeViewModel.new)
-      ..registerLazySingleton<GoogleMapsViewModel>(GoogleMapsViewModel.new)
       ..registerLazySingleton<MyViewModel>(MyViewModel.new);
   }
 
   static AppThemeViewModel get appThemeViewModel =>
       _getIt.get<AppThemeViewModel>();
 
-  static GoogleMapsViewModel get googleMapsViewModel =>
-      _getIt.get<GoogleMapsViewModel>();
 
       
   static MyViewModel get myViewModel => _getIt.get<MyViewModel>();
