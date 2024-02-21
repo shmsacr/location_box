@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:custom_info_window/custom_info_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -7,8 +8,6 @@ import 'package:kartal/kartal.dart';
 import 'package:location_box/app/feature/view/home/view_model/home_view_model.dart';
 import 'package:location_box/app/feature/view/home/view_model/state/home_state.dart';
 import 'package:location_box/app/feature/view/maps/mixin/google_maps_view_mixin.dart';
-import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_model.dart';
-import 'package:location_box/app/feature/view/maps/view_model/state/google_maps_state.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
 import 'package:location_box/app/product/widget/custom_bottom_sheet.dart';
 import 'package:lottie/lottie.dart';
@@ -43,7 +42,7 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
             actions: [
               IconButton(
                   icon: Icon(Icons.save),
-                  onPressed: ()  {
+                  onPressed: () {
                     CustomBottomSheetHelper(
                       context: context,
                       locationModel: null,
@@ -67,8 +66,11 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
           body: Stack(
             children: [
               GoogleMap(
-                onTap: (argument) {
-                  debugPrint('argument : $argument');
+                onTap: (position) {
+                  customInfoWindowController.hideInfoWindow!();
+                },
+                onCameraMove: (position) {
+                  customInfoWindowController.onCameraMove!();
                 },
                 mapType: MapType.normal,
                 initialCameraPosition: widget.locationModel == null
@@ -84,9 +86,14 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
                         zoom: 14.4746,
                       ),
                 onMapCreated: (GoogleMapController controller) {
-                  googleMapsViewModel.getIt.mapController = controller;
+                  customInfoWindowController.googleMapController = controller;
                 },
-                markers: state.markers!.toSet(),
+                markers: markers.toSet(),
+              ),
+              CustomInfoWindow(
+                controller: customInfoWindowController,
+                height: 75,
+                width: 150,
               ),
               if (state.isLoading)
                 Container(
