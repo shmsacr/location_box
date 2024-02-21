@@ -10,7 +10,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_box/app/core/service/location_service/location_service_impl.dart';
 import 'package:location_box/app/core/service/location_storage/location_storage_impl.dart';
 import 'package:location_box/app/feature/view/home/view_model/state/home_state.dart';
-import 'package:location_box/app/feature/view/maps/widget/custom_info_windows.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
 import 'package:location_box/app/product/model/my_view_model.dart';
 import 'package:location_box/gen/src/asset/assets.gen.dart';
@@ -100,12 +99,7 @@ class HomeViewModel extends Cubit<HomeState> {
             icon: icon,
             markerId: MarkerId(_location.id!),
             position: LatLng(_location.latitude!, _location.longitude!),
-            infoWindow: CustomInfoWindows(
-              locationModel: _location,
-              onTap: () {
-                print('Marker tapped');
-              },
-            ),
+            onTap: () => print('Marker tapped'),
           );
           emit(state.copyWith(
             isSaving: true,
@@ -272,12 +266,6 @@ class HomeViewModel extends Cubit<HomeState> {
             print('Marker tapped');
           },
           position: LatLng(position.latitude!, position.longitude!),
-          infoWindow: CustomInfoWindows(
-            locationModel: position,
-            onTap: () {
-              print('Marker tapped');
-            },
-          ),
         ));
       }
     }
