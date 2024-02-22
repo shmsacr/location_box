@@ -50,7 +50,6 @@ dependencies:
   json_annotation: ^4.8.1
   path: ^1.8.3
   share_plus: ^7.2.1
-  flutter_map_marker_popup: ^6.1.2
   custom_info_window: ^1.0.1
 
 dev_dependencies:
