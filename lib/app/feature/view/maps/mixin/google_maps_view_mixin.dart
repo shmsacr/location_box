@@ -53,12 +53,7 @@ mixin GoogleMapsViewMixin on State<GoogleMapsView> {
                       Expanded(
                         child: Container(
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.white,
-                                Colors.blue,
-                              ],
-                            ),
+                            color: Colors.white70,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Padding(
@@ -75,24 +70,30 @@ mixin GoogleMapsViewMixin on State<GoogleMapsView> {
                                         File(position.picture ?? ''),
                                         width: 50,
                                         height: 50,
+                                        fit: BoxFit.cover,
                                       ),
                                 SizedBox(
                                   width: 8.0,
                                 ),
-                                Column(children: [
-                                  Text(
-                                    position.title ?? '',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    position.description ?? '',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ]),
+                                Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        position.title ?? '',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      Text(
+                                        position.description ?? '',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ]),
                               ],
                             ),
                           ),
