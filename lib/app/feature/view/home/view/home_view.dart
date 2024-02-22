@@ -153,24 +153,53 @@ class CustomCardWidget extends StatelessWidget {
           Row(
             children: [
               state.locations![index].picture != null
-                  ? Container(
-                      child: Image.file(
-                        File(state.locations![index].picture!),
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.file(
+                          File(state.locations![index].picture!),
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     )
                   : Container(
                       child: Icon(Icons.image, size: 100),
                     ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(state.locations![index].title!),
-                  Text(state.locations![index].address!),
-                ],
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(state.locations![index].title!,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        )),
+                    Text(
+                      state.locations![index].description!,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ],
+                ),
               )
+            ],
+          ),
+          Row(
+            children: [
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Text(
+                    state.locations![index].address!,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ),
+              ),
             ],
           ),
           Row(
