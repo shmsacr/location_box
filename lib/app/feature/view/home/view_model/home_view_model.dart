@@ -10,7 +10,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location_box/app/core/service/location_service/location_service_impl.dart';
 import 'package:location_box/app/core/service/location_storage/location_storage_impl.dart';
 import 'package:location_box/app/feature/view/home/view_model/state/home_state.dart';
-import 'package:location_box/app/feature/view/maps/widget/custom_info_windows.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
 import 'package:location_box/app/product/model/my_view_model.dart';
 import 'package:location_box/gen/src/asset/assets.gen.dart';
@@ -100,12 +99,7 @@ class HomeViewModel extends Cubit<HomeState> {
             icon: icon,
             markerId: MarkerId(_location.id!),
             position: LatLng(_location.latitude!, _location.longitude!),
-            infoWindow: CustomInfoWindows(
-              locationModel: _location,
-              onTap: () {
-                print('Marker tapped');
-              },
-            ),
+            onTap: () => print('Marker tapped'),
           );
           emit(state.copyWith(
             isSaving: true,
@@ -213,39 +207,25 @@ class HomeViewModel extends Cubit<HomeState> {
     ));
   }
 
-  Future<void> updateLocation(File? imagePath, String locationId) async {
+  Future<void> updateLocation(LocationModel _locationModel) async {
     final _formKey = getIt.formKey;
     try {
-      if (_formKey.currentState?.saveAndValidate() ?? false) {
-        final LocationModel _location = LocationModel.fromJson(
-          {
-            'id': locationId,
-            'title': _formKey.currentState!.value['title'],
-            'address': _formKey.currentState!.value['address'],
-            'description': _formKey.currentState!.value['description'],
-            'picture': imagePath?.path,
-            'phone': _formKey.currentState!.value['phone'],
-            'latitude': state.latitude,
-            'longitude': state.longitude,
-            'iconPath':
-                getIt.iconController?.text ?? Assets.icons.icDefault.path,
-          },
-        );
+     
         final response =
-            await _locationStorage.updateLocation(location: _location);
-        if (response.id == locationId) {
+            await _locationStorage.updateLocation(location: _locationModel);
+        if (response.id == _locationModel.id) {
           final updatedLocations = List<LocationModel>.from(state.locations!);
           final index =
-              updatedLocations.indexWhere((loc) => loc.id == locationId);
+              updatedLocations.indexWhere((loc) => loc.id == _locationModel.id);
           if (index != -1) {
-            updatedLocations[index] = _location;
+            updatedLocations[index] = _locationModel;
 
             emit(state.copyWith(
               locations: updatedLocations,
             ));
           }
         }
-      }
+      
     } catch (e) {}
   }
 
@@ -272,12 +252,6 @@ class HomeViewModel extends Cubit<HomeState> {
             print('Marker tapped');
           },
           position: LatLng(position.latitude!, position.longitude!),
-          infoWindow: CustomInfoWindows(
-            locationModel: position,
-            onTap: () {
-              print('Marker tapped');
-            },
-          ),
         ));
       }
     }

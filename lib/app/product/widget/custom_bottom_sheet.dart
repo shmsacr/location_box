@@ -14,6 +14,7 @@ import 'package:location_box/app/feature/view/maps/view_model/google_maps_view_m
 import 'package:location_box/app/feature/view/maps/widget/dropdown_widget.dart';
 import 'package:location_box/app/product/model/location/location_model.dart';
 import 'package:location_box/app/product/model/my_view_model.dart';
+import 'package:location_box/gen/src/asset/assets.gen.dart';
 import 'package:path/path.dart' as path;
 import 'package:permission_handler/permission_handler.dart';
 
@@ -158,8 +159,27 @@ class CustomBottomSheetHelper{
                     TextButton(
                       onPressed: () {
                         if (isUpdate) {
+                          final LocationModel _location =
+                              LocationModel.fromJson(
+                            {
+                              'id': locationModel!.id!,
+                              'title': getIt.formKey.currentState!.value['title'],
+                              'address':
+                                  getIt.formKey.currentState!.value['address'],
+                              'description':
+                                  getIt
+                                  .formKey.currentState!.value['description'],
+                              'picture': getIt.formKey.currentState!.value['picture'],
+                                  
+                              'phone': getIt.formKey.currentState!.value['phone'],
+                              'latitude': locationModel!.latitude,
+                              'longitude': locationModel!.longitude,
+                              'iconPath': getIt.iconController?.text ??
+                                  Assets.icons.icDefault.path,
+                            },
+                          );
                           context.read<HomeViewModel>().updateLocation(
-                              _newPicture.value, locationModel!.id!);
+                              _location);
                         } else {
                           context
                               .read<HomeViewModel>()

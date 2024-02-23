@@ -27,110 +27,110 @@ class _HomeViewState extends State<HomeView> with HomeViewMixin {
     return BlocBuilder<HomeViewModel, HomeState>(
       builder: (context, state) {
         return Scaffold(
-            drawer: Drawer(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: <Widget>[
-                  const DrawerHeader(
-                    decoration: BoxDecoration(),
-                    child: Text('Drawer Header'),
-                  ),
-                  ListTile(
-                    title: const Text('Item 1'),
-                    onTap: () {},
-                  ),
-                  ListTile(
-                    title: const Text('Item 2'),
-                    onTap: () {},
-                  ),
-                  Switch(
-                      value:
-                          context.watch<AppThemeViewModel>().state.isDarkMode,
-                      onChanged: (value) {
-                        context
-                            .read<AppThemeViewModel>()
-                            .setThemeMode(themeMode: value);
-                      })
-                ],
-              ),
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                context.router.push(GoogleMapsRoute());
-              },
-              child: Icon(Icons.add),
-            ),
-            appBar: AppBar(
-                title: state.isSearching
-                    ? SizedBox(
-                        height: context.height * 0.066,
-                        child: TextField(
-                          controller: searchController,
-                          autofocus: true,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.zero,
-                            prefix: Icon(Icons.search),
-                            suffix: IconButton(
-                              onPressed: () {
-                                context.read<HomeViewModel>().clearSearch();
-                                searchController.clear();
-                              },
-                              icon: Icon(Icons.clear_sharp),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide.none,
-                              borderRadius:
-                                  BorderRadius.circular(context.lowValue),
-                            ),
-                            enabledBorder: InputBorder.none,
-                            hintText: 'Search Location',
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      )
-                    : Text('Location Box'),
-                flexibleSpace: Container(
-                  decoration: CustomBoxDecoration.getBoxDecoration(context),
+          drawer: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                const DrawerHeader(
+                  decoration: BoxDecoration(),
+                  child: Text('Drawer Header'),
                 ),
-                actions: [
-                  state.isSearching
-                      ? IconButton(
-                          onPressed: () {
-                            context.read<HomeViewModel>().clearSearch();
-                            searchController.clear();
+                ListTile(
+                  title: const Text('Item 1'),
+                  onTap: () {},
+                ),
+                ListTile(
+                  title: const Text('Item 2'),
+                  onTap: () {},
+                ),
+                Switch(
+                    value: context.watch<AppThemeViewModel>().state.isDarkMode,
+                    onChanged: (value) {
+                      context
+                          .read<AppThemeViewModel>()
+                          .setThemeMode(themeMode: value);
+                    })
+              ],
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              context.router.push(GoogleMapsRoute());
+            },
+            child: Icon(Icons.add),
+          ),
+          appBar: AppBar(
+              title: state.isSearching
+                  ? SizedBox(
+                      height: context.height * 0.066,
+                      child: TextField(
+                        controller: searchController,
+                        autofocus: true,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.zero,
+                          prefix: Icon(Icons.search),
+                          suffix: IconButton(
+                            onPressed: () {
+                              context.read<HomeViewModel>().clearSearch();
+                              searchController.clear();
+                            },
+                            icon: Icon(Icons.clear_sharp),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius:
+                                BorderRadius.circular(context.lowValue),
+                          ),
+                          enabledBorder: InputBorder.none,
+                          hintText: 'Search Location',
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    )
+                  : Text('Location Box'),
+              flexibleSpace: Container(
+                decoration: CustomBoxDecoration.getBoxDecoration(context),
+              ),
+              actions: [
+                state.isSearching
+                    ? IconButton(
+                        onPressed: () {
+                          context.read<HomeViewModel>().clearSearch();
+                          searchController.clear();
+                        },
+                        icon: Icon(Icons.close))
+                    : IconButton(
+                        onPressed: () {
+                          context.read<HomeViewModel>().searchLocation('');
+                        },
+                        icon: Icon(Icons.search)),
+              ]),
+          body: state.isLoading
+              ? Center(child: CircularProgressIndicator())
+              : Container(
+                  decoration: CustomBoxDecoration.getBoxDecoration(context),
+                  child: (state.locations != null &&
+                          state.locations!.isNotEmpty)
+                      ? ListView.builder(
+                          itemCount: state.locations?.length,
+                          itemBuilder: (context, index) {
+                            return CustomCardWidget(state: state, index: index);
                           },
-                          icon: Icon(Icons.close))
-                      : IconButton(
-                          onPressed: () {
-                            context.read<HomeViewModel>().searchLocation('');
-                          },
-                          icon: Icon(Icons.search)),
-                ]),
-            body: state.isLoading
-                ? Center(child: CircularProgressIndicator())
-                : Container(
-                    decoration: CustomBoxDecoration.getBoxDecoration(context),
-                    child:
-                        (state.locations != null && state.locations!.isNotEmpty)
-                            ? ListView.builder(
-                                itemCount: state.locations?.length,
-                                itemBuilder: (context, index) {
-                                  return CustomCardWidget(
-                                      state: state, index: index);
+                        )
+                      : (state.isSearching)
+                          ? Center(
+                              child: Text('No found Location'),
+                            )
+                          : Center(
+                              child: TextButton(
+                                child: Text('Add Location'),
+                                onPressed: () {
+                                  context.router.push(GoogleMapsRoute());
                                 },
-                              )
-                            : (state.isSearching)
-                                ? Center(
-                                    child: Text('No found Location'),
-                                  )
-                                : Center(
-                                    child: TextButton(
-                                      child: Text('Add Location'),
-                                      onPressed: () {
-                                        context.router.push(GoogleMapsRoute());
-                                      },
-                                    ),
-                                  )));
+                              ),
+                            ),
+                ),
+        );
       },
     );
   }
@@ -153,24 +153,53 @@ class CustomCardWidget extends StatelessWidget {
           Row(
             children: [
               state.locations![index].picture != null
-                  ? Container(
-                      child: Image.file(
-                        File(state.locations![index].picture!),
-                        width: 100,
-                        height: 100,
-                        fit: BoxFit.cover,
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.file(
+                          File(state.locations![index].picture!),
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     )
                   : Container(
                       child: Icon(Icons.image, size: 100),
                     ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(state.locations![index].title!),
-                  Text(state.locations![index].address!),
-                ],
+              Flexible(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(state.locations![index].title!,
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        )),
+                    Text(
+                      state.locations![index].description!,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                    ),
+                  ],
+                ),
               )
+            ],
+          ),
+          Row(
+            children: [
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Text(
+                    state.locations![index].address!,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                  ),
+                ),
+              ),
             ],
           ),
           Row(
