@@ -48,7 +48,68 @@ mixin GoogleMapsViewMixin on State<GoogleMapsView> {
             onTap: () {
               if (customInfoWindowController.addInfoWindow != null) {
                 customInfoWindowController.addInfoWindow!(
-                  Column(
+                  Card(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            position.picture != null
+                                ? Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Image.file(
+                                        File(position.picture!),
+                                        width: 50,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  )
+                                : Container(
+                                    child: Icon(Icons.image, size: 65),
+                                  ),
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(position.title!,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      )),
+                                  Text(
+                                    position.description!,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 12.0),
+                                child: Text(
+                                  position.address!,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                  /*  Column(
                     children: [
                       Expanded(
                         child: Container(
@@ -75,32 +136,37 @@ mixin GoogleMapsViewMixin on State<GoogleMapsView> {
                                 SizedBox(
                                   width: 8.0,
                                 ),
-                                Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        position.title ?? '',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500,
+                                Flexible(
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          position.title ?? '',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        position.description ?? '',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.w500,
+                                        Text(
+                                          position.address ?? '',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.w500,
+                                          ),
                                         ),
-                                      ),
-                                    ]),
+                                      ]),
+                                ),
                               ],
                             ),
                           ),
                         ),
                       ),
                     ],
-                  ),
+                  ), */
                   LatLng(position.latitude!, position.longitude!),
                 );
               }
