@@ -92,8 +92,8 @@ class _GoogleMapsViewState extends State<GoogleMapsView>
               ),
               CustomInfoWindow(
                 controller: customInfoWindowController,
-                height: 75,
-                width: 150,
+                height: 100,
+                width: 200,
               ),
               if (state.isLoading)
                 Container(
